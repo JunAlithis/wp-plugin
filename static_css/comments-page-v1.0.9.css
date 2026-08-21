@@ -1,0 +1,1695 @@
+/* =========================================================
+ *  COMMENTS PAGE PLUGIN — M.E.R.Y.O.S.A.B Electronics
+ *  Полный файл стилей comments-page-plugin.css
+ *  Версия 2.0 - Полный дизайн страницы отзывов
+ * =======================================================*/
+
+/* ---------- БАЗОВЫЕ СТИЛИ ---------- */
+/* Вместо глобальных стилей - стилизуем только контейнер плагина */
+.msb-plugin-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Стили только для заголовков внутри плагина */
+.msb-plugin-title {
+    font-size: 2.8rem;
+    font-weight: 800;
+    color: #333;
+    margin-bottom: 12px;
+}
+
+.subtitle {
+    font-size: 1.1rem;
+    color: #94a3b8;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+    padding: 6px 14px;
+    border-radius: 12px;
+    background: rgba(30, 64, 175, 0.15);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    color: #93c5fd;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+/* ---------- БАЗОВЫЙ КОНТЕЙНЕР ---------- */
+
+.msb-comments-wrapper {
+    max-width: 1080px; /* УВЕЛИЧЕНО с 880px до 1080px */
+    margin: 24px auto;
+    padding: 28px 30px 32px;
+    background: #0f172a;
+    border-radius: 24px;
+    box-shadow: 
+        0 20px 50px rgba(0, 0, 0, 0.7),
+        0 0 0 1px rgba(59, 130, 246, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    color: #e5e7eb;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: 15px;
+    line-height: 1.5;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+.msb-comments-wrapper:hover {
+    transform: translateY(-5px);
+    box-shadow: 
+        0 30px 60px rgba(0, 0, 0, 0.8),
+        0 0 0 1px rgba(59, 130, 246, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.msb-comments-wrapper::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #3b82f6, #8b5cf6, #10b981);
+    z-index: 1;
+}
+
+.msb-comments-wrapper a {
+    color: #60a5fa;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.msb-comments-wrapper a:hover {
+    color: #93c5fd;
+    /* text-decoration: underline; */
+}
+
+/* ---------- ВЕРХНЯЯ ПАНЕЛЬ ---------- */
+
+.msb-review-topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 22px;
+    flex-wrap: wrap;
+}
+
+.msb-comments-title {
+    margin: 0 0 6px;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #f8fafc;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.msb-comments-title i {
+    color: #60a5fa;
+    font-size: 1.3rem;
+}
+
+.msb-comments-subtitle {
+    margin: 0;
+    font-size: 0.95rem;
+    color: #94a3b8;
+}
+
+/* ---------- КНОПКИ ОСНОВНЫЕ / ВТОРИЧНЫЕ ---------- */
+
+.msb-primary-button,
+.msb-open-review-modal {
+    border: none;
+    border-radius: 12px;
+    padding: 12px 24px;
+    background: linear-gradient(135deg, #1d4ed8, #2563eb);
+    color: #ffffff;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 1rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: 0 8px 24px rgba(37, 99, 235, 0.4);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.msb-primary-button::before,
+.msb-open-review-modal::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.7s ease;
+}
+
+.msb-primary-button:hover,
+.msb-open-review-modal:hover {
+    background: linear-gradient(135deg, #2563eb, #1e40af);
+    transform: translateY(-3px);
+    box-shadow: 0 14px 32px rgba(37, 99, 235, 0.6);
+}
+
+.msb-primary-button:hover::before,
+.msb-open-review-modal:hover::before {
+    left: 100%;
+}
+
+.msb-secondary-button {
+    border-radius: 12px;
+    border: 1px solid #475569;
+    padding: 10px 18px;
+    background: rgba(30, 41, 59, 0.7);
+    color: #e2e8f0;
+    font-size: 0.9rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.msb-secondary-button:hover {
+    background: rgba(30, 41, 59, 0.9);
+    border-color: #64748b;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* ---------- СОРТИРОВКА ---------- */
+
+.msb-sort-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    padding: 12px 16px;
+    border-radius: 14px;
+    background: rgba(15, 23, 42, 0.7);
+    border: 1px solid rgba(71, 85, 105, 0.5);
+}
+
+.msb-sort-label {
+    font-weight: 600;
+    margin-right: 4px;
+    font-size: 0.95rem;
+    color: #cbd5e1;
+}
+
+.msb-sort-chip {
+    border: 1px solid #475569;
+    border-radius: 999px;
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    background: rgba(30, 41, 59, 0.8);
+    cursor: pointer;
+    color: #e2e8f0;
+    transition: all 0.25s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.msb-sort-chip:hover {
+    border-color: #60a5fa;
+    background: rgba(30, 64, 175, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.2);
+}
+
+.msb-sort-chip--active {
+    background: linear-gradient(135deg, #1d4ed8, #2563eb);
+    border-color: #3b82f6;
+    color: #f8fafc;
+    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3);
+}
+
+/* ---------- СПИСОК ОТЗЫВОВ ---------- */
+
+.msb-comments-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 30px;
+}
+
+/* ---------- КАРТОЧКА ОТЗЫВА ---------- */
+
+.msb-comment-card {
+    border-radius: 18px;
+    background: rgba(30, 41, 59, 0.8);
+    padding: 20px;
+    border: 1px solid rgba(71, 85, 105, 0.7);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+}
+
+.msb-comment-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 6px;
+    height: 100%;
+    background: linear-gradient(to bottom, #3b82f6, #8b5cf6);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.msb-comment-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(96, 165, 250, 0.7);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+}
+
+.msb-comment-card:hover::before {
+    opacity: 1;
+}
+
+.msb-comment-card--child {
+    margin-top: 16px;
+    padding: 16px;
+    background: rgba(30, 41, 59, 0.6);
+    border-radius: 14px;
+    border-color: rgba(71, 85, 105, 0.5);
+    position: relative;
+}
+
+.msb-comment-card--child::after {
+    content: "";
+    position: absolute;
+    top: -8px;
+    left: 20px;
+    width: 2px;
+    height: 8px;
+    background: rgba(96, 165, 250, 0.5);
+}
+
+/* ---------- ШАПКА КАРТОЧКИ ---------- */
+
+.msb-comment-card-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+}
+
+.msb-comment-author-block {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+}
+
+.msb-comment-avatar {
+    position: relative;
+}
+
+.msb-comment-avatar img,
+.msb-comment-avatar .avatar {
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border: 3px solid rgba(96, 165, 250, 0.3);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+}
+
+.msb-comment-card:hover .msb-comment-avatar img,
+.msb-comment-card:hover .msb-comment-avatar .avatar {
+    border-color: rgba(96, 165, 250, 0.7);
+    transform: scale(1.05);
+}
+
+.msb-comment-author-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.msb-comment-author-name {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #f1f5f9;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.msb-comment-author-verified {
+    color: #10b981;
+    font-size: 0.9rem;
+}
+
+.msb-comment-meta-line {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-size: 0.85rem;
+    color: #94a3b8;
+}
+
+/* ---------- ЧИПЫ (СТРАНА / УСЛУГА) ---------- */
+
+.msb-chip {
+    padding: 4px 12px;
+    border-radius: 999px;
+    border: 1px solid;
+    font-size: 0.8rem;
+    font-weight: 600;
+    background: rgba(15, 23, 42, 0.7);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+}
+
+.msb-chip-country {
+    border-color: #10b981;
+    color: #10b981;
+}
+
+.msb-chip-service {
+    border-color: #38bdf8;
+    color: #38bdf8;
+}
+
+.msb-chip:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* ---------- РЕЙТИНГ ЗВЁЗДАМИ ---------- */
+
+.msb-comment-rating {
+    display: flex;
+    align-items: center;
+    font-size: 0.95rem;
+}
+
+.msb-stars {
+    color: #fbbf24;
+    font-size: 1.1rem;
+    text-shadow: 0 0 10px rgba(251, 191, 36, 0.3);
+    letter-spacing: 2px;
+}
+
+/* ---------- ТЕКСТ ОТЗЫВА ---------- */
+
+.msb-comment-content {
+    margin-top: 12px;
+    font-size: 0.95rem;
+    color: #e2e8f0;
+    line-height: 1.7;
+}
+
+.msb-comment-content p {
+    margin: 0 0 10px;
+}
+
+.msb-comment-content p:last-child {
+    margin-bottom: 0;
+}
+
+/* ---------- МЕДИА ВНУТРИ ОТЗЫВА ---------- */
+
+.msb-comment-media {
+    margin-top: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.msb-comment-media-item {
+    max-width: 150px;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 2px solid #475569;
+    background: #0f172a;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.msb-comment-media-item:hover {
+    transform: scale(1.05);
+    border-color: #60a5fa;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+.msb-comment-media-item img {
+    display: block;
+    width: 100%;
+    height: 100px;
+    object-fit: cover;
+}
+
+.msb-comment-media-item video {
+    width: 150px;
+    height: 100px;
+    display: block;
+    object-fit: cover;
+}
+
+/* ---------- БЛОК ДЕЙСТВИЙ ПОД ОТЗЫВОМ ---------- */
+
+.msb-comment-actions {
+    margin-top: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: center;
+}
+
+.msb-comment-actions-left,
+.msb-comment-actions-right {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+/* Кнопка "Ответить" */
+
+.msb-reply-button {
+    border-radius: 12px;
+    border: 1px solid #475569;
+    padding: 8px 16px;
+    background: rgba(30, 41, 59, 0.8);
+    color: #e2e8f0;
+    font-size: 0.9rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.25s ease;
+}
+
+.msb-reply-button:hover {
+    background: rgba(30, 64, 175, 0.2);
+    border-color: #60a5fa;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.2);
+}
+
+/* ---------- РЕАКЦИИ 👍😍🤯 ---------- */
+
+.msb-reactions-bar {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.msb-reaction-button {
+    border-radius: 999px;
+    border: 1px solid #475569;
+    padding: 6px 12px;
+    background: rgba(30, 41, 59, 0.8);
+    color: #e2e8f0;
+    font-size: 0.85rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 36px;
+    transition: all 0.25s ease;
+}
+
+.msb-reaction-button:hover {
+    background: rgba(30, 64, 175, 0.2);
+    border-color: #60a5fa;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.2);
+}
+
+.msb-reaction-button--voted {
+    background: linear-gradient(135deg, #1d4ed8, #2563eb);
+    border-color: #3b82f6;
+    color: #f8fafc;
+    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3);
+}
+
+.msb-reaction-emoji {
+    font-size: 1.2rem;
+    line-height: 1;
+}
+
+.msb-reaction-count {
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+/* ============ КНОПКА "ПОЛЕЗНЫЙ ОТЗЫВ" ============ */
+
+.msb-helpful-button {
+    border-radius: 14px;
+    border: 1px solid #475569;
+    padding: 10px 20px;
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.8));
+    color: #e2e8f0;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 0.95rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+}
+
+/* Эффект свечения при наведении */
+.msb-helpful-button::before {
+    content: "";
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(135deg, #10b981, #34d399);
+    border-radius: 16px;
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.msb-helpful-button:hover {
+    transform: translateY(-3px);
+    border-color: #10b981;
+    box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
+    color: #ecfdf5;
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(20, 83, 45, 0.2));
+}
+
+.msb-helpful-button:hover::before {
+    opacity: 0.4;
+}
+
+/* Счетчик */
+.msb-helpful-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 28px;
+    height: 28px;
+    background: rgba(16, 185, 129, 0.2);
+    border: 1px solid rgba(16, 185, 129, 0.4);
+    border-radius: 50%;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #10b981;
+    padding: 0 8px;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+}
+
+.msb-helpful-button:hover .msb-helpful-count {
+    background: rgba(16, 185, 129, 0.4);
+    border-color: #10b981;
+    color: #ecfdf5;
+    transform: scale(1.1);
+    box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
+}
+
+/* Активное состояние (после нажатия) */
+.msb-helpful-button.active {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.3), rgba(20, 83, 45, 0.4));
+    border-color: #10b981;
+    color: #ecfdf5;
+    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+}
+
+.msb-helpful-button.active .msb-helpful-count {
+    background: linear-gradient(135deg, #10b981, #34d399);
+    color: white;
+    border-color: #34d399;
+    box-shadow: 0 5px 15px rgba(16, 185, 129, 0.4);
+}
+
+/* Анимация при нажатии */
+.msb-helpful-button:active {
+    transform: scale(0.98);
+}
+
+/* Эффект пульсации при голосовании */
+@keyframes helpfulPulse {
+    0% { 
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+        transform: scale(1);
+    }
+    70% { 
+        box-shadow: 0 0 0 10px rgba(16, 185, 129, 0);
+        transform: scale(1.05);
+    }
+    100% { 
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+        transform: scale(1);
+    }
+}
+
+.msb-helpful-button.clicked {
+    animation: helpfulPulse 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Состояние загрузки */
+.msb-helpful-button.loading {
+    opacity: 0.8;
+    cursor: wait;
+}
+
+.msb-helpful-button.loading::after {
+    content: "";
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(16, 185, 129, 0.3);
+    border-top-color: #10b981;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-left: 8px;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Индикатор "уже голосовал" */
+.msb-helpful-button.voted {
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.msb-helpful-button.voted:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+.msb-helpful-button.voted:hover::before {
+    opacity: 0;
+}
+
+/* ---------- ВЛОЖЕННЫЕ ОТВЕТЫ ---------- */
+
+.msb-comment-children {
+    margin-top: 16px;
+    padding-left: 24px;
+    border-left: 2px dashed #475569;
+    position: relative;
+}
+
+.msb-comment-children::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -1px;
+    width: 2px;
+    height: 100%;
+    background: linear-gradient(to bottom, transparent, #475569, transparent);
+}
+
+/* ---------- ТЕКСТ "НЕТ ОТЗЫВОВ" ---------- */
+
+.msb-no-comments {
+    font-size: 1rem;
+    color: #94a3b8;
+    text-align: center;
+    padding: 40px 20px;
+    background: rgba(30, 41, 59, 0.5);
+    border-radius: 16px;
+    border: 2px dashed #475569;
+}
+
+/* ============ ПАГИНАЦИЯ В СТИЛЕ MERYOSAB ============ */
+
+.msb-pagination {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(71, 85, 105, 0.5);
+    position: relative;
+}
+
+.msb-pagination::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #3b82f6, transparent);
+}
+
+.msb-pagination__links {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+/* Кнопки пагинации */
+.msb-pagination__prev,
+.msb-pagination__next {
+    border-radius: 14px;
+    border: 1px solid #475569;
+    padding: 12px 24px;
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.8));
+    color: #e2e8f0;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 0.95rem;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+    min-width: 200px;
+    justify-content: center;
+}
+
+/* Эффект свечения при наведении */
+.msb-pagination__prev::before,
+.msb-pagination__next::before {
+    content: "";
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(135deg, #1d4ed8, #2563eb, #3b82f6);
+    border-radius: 16px;
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.msb-pagination__prev:hover,
+.msb-pagination__next:hover 
+{
+    transform: translateY(-3px);
+    border-color: rgba(96, 165, 250, 0.8);
+    box-shadow: 0 10px 30px rgba(37, 99, 235, 0.3);
+    color: #f8fafc;
+}
+
+.msb-pagination__prev:hover::before,
+.msb-pagination__next:hover::before {
+    opacity: 0.4;
+}
+
+/* Стрелки */
+.msb-pagination__prev::after {
+    content: "←";
+    font-size: 1.1rem;
+    opacity: 0.8;
+    transition: transform 0.3s ease;
+}
+
+.msb-pagination__next::after {
+    content: "→";
+    font-size: 1.1rem;
+    opacity: 0.8;
+    transition: transform 0.3s ease;
+    order: 2;
+}
+
+.msb-pagination__prev:hover::after {
+    transform: translateX(-3px);
+}
+
+.msb-pagination__next:hover::after {
+    transform: translateX(3px);
+}
+
+/* Неактивное состояние */
+.msb-pagination__prev[href=""]:not([href]),
+.msb-pagination__next[href=""]:not([href]) {
+    opacity: 0.4;
+    cursor: not-allowed;
+    pointer-events: none;
+    filter: grayscale(0.8);
+}
+
+/* Индикатор текущей страницы */
+.msb-pagination__info {
+    text-align: center;
+    margin-top: 15px;
+    font-size: 0.9rem;
+    color: #94a3b8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.msb-pagination__info::before {
+    content: "📄";
+    font-size: 0.9rem;
+    opacity: 0.7;
+}
+
+/* Номера страниц */
+.msb-pagination__pages {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 15px;
+    flex-wrap: wrap;
+}
+
+.msb-pagination__page {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    border: 1px solid #475569;
+    background: rgba(30, 41, 59, 0.6);
+    color: #cbd5e1;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+}
+
+.msb-pagination__page:hover {
+    background: rgba(37, 99, 235, 0.2);
+    border-color: #3b82f6;
+    color: #f8fafc;
+    transform: translateY(-2px);
+}
+
+.msb-pagination__page.active {
+    background: linear-gradient(135deg, #1d4ed8, #2563eb);
+    border-color: #3b82f6;
+    color: #f8fafc;
+    box-shadow: 0 5px 15px rgba(37, 99, 235, 0.3);
+}
+
+.msb-pagination__page.ellipsis {
+    background: transparent;
+    border: none;
+    cursor: default;
+}
+
+.msb-pagination__page.ellipsis:hover {
+    transform: none;
+    background: transparent;
+}
+
+/* ---------- ИНДИКАТОР "MERYOSAB Travel печатает..." ---------- */
+
+.msb-ai-typing {
+    font-size: 0.95rem;
+    color: #94a3b8;
+    font-style: italic;
+    margin-bottom: 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: rgba(30, 41, 59, 0.7);
+    border-radius: 12px;
+    border: 1px solid rgba(71, 85, 105, 0.5);
+}
+
+.msb-ai-typing::after {
+    content: '●●●';
+    font-size: 0.8em;
+    letter-spacing: 2px;
+    animation: msb-ai-dots 1s infinite;
+}
+
+@keyframes msb-ai-dots {
+    0%   { opacity: 0.2; }
+    50%  { opacity: 1; }
+    100% { opacity: 0.2; }
+}
+
+/* ---------- ФОРМА КОММЕНТАРИЯ ---------- */
+
+.msb-comment-form-wrapper {
+    margin-top: 30px;
+    padding: 24px;
+    background: rgba(30, 41, 59, 0.8);
+    border-radius: 18px;
+    border: 1px solid rgba(71, 85, 105, 0.7);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.msb-form-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin: 0 0 20px;
+    color: #f8fafc;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.msb-form-title i {
+    color: #60a5fa;
+}
+
+.msb-form-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.msb-form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+    min-width: 200px;
+}
+
+.msb-form-field label {
+    font-size: 0.9rem;
+    color: #cbd5e1;
+    font-weight: 600;
+}
+
+.msb-form-field input[type="text"],
+.msb-form-field input[type="email"],
+.msb-form-field select,
+.msb-form-field textarea {
+    border-radius: 12px;
+    border: 1px solid #475569;
+    padding: 12px 16px;
+    font-size: 1rem;
+    background: rgba(15, 23, 42, 0.8);
+    color: #f1f5f9;
+    outline: none;
+    width: 100%;
+    transition: all 0.3s ease;
+}
+
+.msb-form-field input[type="text"]:focus,
+.msb-form-field input[type="email"]:focus,
+.msb-form-field select:focus,
+.msb-form-field textarea:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+    background: rgba(15, 23, 42, 0.9);
+}
+
+.msb-form-field textarea {
+    resize: vertical;
+    min-height: 120px;
+    line-height: 1.6;
+}
+
+/* ---------- РЕЙТИНГ В ФОРМЕ ---------- */
+
+.msb-rating-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.msb-rating-stars {
+    display: inline-flex;
+    flex-direction: row-reverse;
+    gap: 8px;
+    position: relative;
+}
+
+.msb-rating-stars input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.msb-rating-stars label {
+    cursor: pointer;
+    font-size: 2rem;
+    color: #475569;
+    transition: all 0.2s ease;
+}
+
+.msb-rating-stars label:hover,
+.msb-rating-stars label:hover ~ label {
+    color: #fbbf24;
+    transform: scale(1.1);
+}
+
+.msb-rating-stars input[type="radio"]:checked ~ label {
+    color: #fbbf24;
+}
+
+/* ---------- КНОПКА ОТПРАВКИ ---------- */
+
+.msb-comment-form input[type="submit"],
+.msb-comment-form button[type="submit"],
+.comment-form input[type="submit"] {
+    border: none;
+    border-radius: 12px;
+    padding: 14px 28px;
+    background: linear-gradient(135deg, #1d4ed8, #2563eb);
+    color: #ffffff;
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 1.1rem;
+    margin-top: 16px;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 8px 24px rgba(37, 99, 235, 0.4);
+}
+
+.msb-comment-form input[type="submit"]:hover,
+.comment-form input[type="submit"]:hover {
+    background: linear-gradient(135deg, #2563eb, #1e40af);
+    transform: translateY(-3px);
+    box-shadow: 0 14px 32px rgba(37, 99, 235, 0.6);
+}
+
+/* ---------- РАСПОЛОЖЕНИЕ В СТРУКТУРЕ ---------- */
+
+/* Кнопка в блоке действий слева */
+.msb-comment-actions-left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+/* ---------- ДОПОЛНИТЕЛЬНЫЕ ЭЛЕМЕНТЫ ИНТЕРФЕЙСА ---------- */
+
+.stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin: 30px 0;
+    flex-wrap: wrap;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 16px 24px;
+    background: rgba(30, 41, 59, 0.7);
+    border-radius: 16px;
+    border: 1px solid rgba(71, 85, 105, 0.5);
+    min-width: 150px;
+    transition: all 0.3s ease;
+}
+
+.stat-item:hover {
+    transform: translateY(-5px);
+    background: rgba(30, 41, 59, 0.9);
+    border-color: rgba(96, 165, 250, 0.5);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+.stat-value {
+    font-size: 2.2rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #60a5fa, #a78bfa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    line-height: 1;
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    color: #94a3b8;
+    margin-top: 6px;
+}
+
+.footer-note {
+    text-align: center;
+    margin-top: 50px;
+    padding: 20px;
+    color: #64748b;
+    font-size: 0.9rem;
+    border-top: 1px solid rgba(71, 85, 105, 0.5);
+}
+
+/* ---------- АДАПТИВНОСТЬ ---------- */
+
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+    
+    h1 {
+        font-size: 2.2rem;
+    }
+    
+    .msb-comments-wrapper {
+        padding: 20px 16px 24px;
+        border-radius: 20px;
+    }
+
+    .msb-review-topbar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .msb-sort-bar {
+        padding: 10px 12px;
+    }
+
+    .msb-comment-card {
+        padding: 16px;
+    }
+
+    .msb-comment-card-header {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .msb-comment-actions {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .msb-comment-children {
+        padding-left: 16px;
+    }
+
+    .msb-form-row {
+        flex-direction: column;
+        gap: 16px;
+    }
+    
+    .msb-form-field {
+        min-width: 100%;
+    }
+
+    /* Адаптивность пагинации */
+    .msb-pagination__links {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+    
+    .msb-pagination__prev,
+    .msb-pagination__next {
+        width: 100%;
+        min-width: auto;
+        justify-content: center;
+        padding: 14px 20px;
+    }
+    
+    .msb-helpful-button {
+        width: 100%;
+        justify-content: center;
+        padding: 12px 20px;
+    }
+    
+    .msb-comment-actions-left {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* ---------- МЕДИА ДЛЯ МОБИЛЬНЫХ ---------- */
+
+@media (max-width: 480px) {
+    body {
+        padding: 10px;
+    }
+    
+    h1 {
+        font-size: 1.8rem;
+    }
+    
+    .subtitle {
+        font-size: 1rem;
+    }
+    
+    .msb-comments-wrapper {
+        padding: 16px 12px 20px;
+        border-radius: 16px;
+    }
+    
+    .msb-comments-title {
+        font-size: 1.2rem;
+    }
+    
+    .msb-comments-subtitle {
+        font-size: 0.85rem;
+    }
+    
+    .msb-primary-button,
+    .msb-open-review-modal {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .msb-comment-avatar img,
+    .msb-comment-avatar .avatar {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .msb-comment-author-name {
+        font-size: 1rem;
+    }
+    
+    .msb-comment-content {
+        font-size: 0.9rem;
+    }
+    
+    .msb-comment-media-item {
+        max-width: 100px;
+        height: 80px;
+    }
+    
+    .msb-comment-media-item video {
+        width: 100px;
+        height: 80px;
+    }
+    
+    .msb-reaction-button {
+        padding: 5px 10px;
+        font-size: 0.8rem;
+    }
+    
+    .msb-reply-button,
+    .msb-helpful-button {
+        padding: 8px 14px;
+        font-size: 0.85rem;
+    }
+}
+
+/* Анимация появления страницы */
+@keyframes pageFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+body {
+    animation: pageFadeIn 0.8s ease-out;
+}
+
+/* Скрытие элементов при отсутствии контента */
+.msb-comments-list:empty + .msb-pagination,
+.msb-comments-list:empty ~ .msb-pagination {
+    display: none;
+}
+
+/* Стили для состояния загрузки */
+.msb-loading {
+    opacity: 0.6;
+    pointer-events: none;
+    position: relative;
+}
+
+.msb-loading::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 40px;
+    height: 40px;
+    border: 3px solid #3b82f6;
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    z-index: 10;
+}
+
+/* Стили для ошибок */
+.msb-error {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: 12px;
+    padding: 16px;
+    margin: 20px 0;
+    color: #fca5a5;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+.msb-error::before {
+    content: "⚠️";
+    display: block;
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+/* Стили для успешных сообщений */
+.msb-success {
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    border-radius: 12px;
+    padding: 16px;
+    margin: 20px 0;
+    color: #a7f3d0;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+.msb-success::before {
+    content: "✅";
+    display: block;
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+/* Стили для информационных сообщений */
+.msb-info {
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    border-radius: 12px;
+    padding: 16px;
+    margin: 20px 0;
+    color: #93c5fd;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+.msb-info::before {
+    content: "💡";
+    display: block;
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+/* Стили для предупреждений */
+.msb-warning {
+    background: rgba(245, 158, 11, 0.1);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    border-radius: 12px;
+    padding: 16px;
+    margin: 20px 0;
+    color: #fcd34d;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+.msb-warning::before {
+    content: "⚠️";
+    display: block;
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+/* Стили для пустых состояний */
+.msb-empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #94a3b8;
+}
+
+.msb-empty-state::before {
+    content: "📝";
+    display: block;
+    font-size: 3rem;
+    margin-bottom: 20px;
+    opacity: 0.5;
+}
+
+.msb-empty-state h3 {
+    color: #cbd5e1;
+    margin-bottom: 10px;
+    font-size: 1.2rem;
+}
+
+.msb-empty-state p {
+    max-width: 400px;
+    margin: 0 auto 20px;
+    line-height: 1.6;
+}
+
+.msb-button-loading {
+    position: relative;
+    opacity: 0.7;
+    cursor: default;
+}
+
+/* Meryosab visual layer: dark service UI and responsive review cards */
+.msb-comments-wrapper { color: #edf4ff; background: linear-gradient(145deg, #101827 0%, #17253a 100%); border: 1px solid rgba(113, 177, 255, .18); border-radius: 28px; box-shadow: 0 22px 60px rgba(3, 10, 24, .28); }
+.msb-comments-wrapper .msb-comment-card { background: rgba(255,255,255,.055); border-color: rgba(255,255,255,.12); border-radius: 22px; }
+.msb-comments-wrapper .msb-comment-card:hover { transform: translateY(-4px); border-color: #66b5ff; }
+.msb-comments-wrapper .msb-primary-button, .msb-comments-wrapper .msb-submit-button { border-radius: 999px; background: #53adff; color: #071321; box-shadow: 0 10px 24px rgba(83,173,255,.28); font-weight: 700; }
+.msb-comments-wrapper input, .msb-comments-wrapper textarea, .msb-comments-wrapper select { background: rgba(255,255,255,.07); color: #fff; border: 1px solid rgba(255,255,255,.18); border-radius: 14px; }
+
+/* v1.0.1: горизонтальные свайп-карточки основного списка отзывов */
+.msb-comments-wrapper .msb-comments-list {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 22px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 8px 4px 18px;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+}
+.msb-comments-wrapper .msb-comments-list > .msb-comment-card {
+    flex: 0 0 min(390px, calc(100% - 36px));
+    min-width: 0;
+    scroll-snap-align: start;
+    background: linear-gradient(145deg, #17263a, #101a2a);
+    border: 1px solid rgba(113,177,255,.24);
+    border-radius: 22px;
+    box-shadow: 0 14px 35px rgba(3,10,24,.24);
+}
+.msb-comments-wrapper .msb-comments-list > .msb-comment-card:hover {
+    border-color: #53adff;
+    transform: translateY(-3px);
+}
+@media (min-width: 900px) {
+    .msb-comments-wrapper .msb-comments-list > .msb-comment-card {
+        flex-basis: min(420px, calc(50% - 12px));
+    }
+}
+@media (max-width: 600px) {
+    .msb-comments-wrapper .msb-comments-list {
+        margin-left: -8px;
+        margin-right: -8px;
+        padding-left: 12px;
+        padding-right: 12px;
+        gap: 14px;
+    }
+    .msb-comments-wrapper .msb-comments-list > .msb-comment-card {
+        flex-basis: calc(100vw - 52px);
+    }
+}
+
+/* v1.0.2: definitive Meryosab review interface */
+.msb-comments-wrapper {
+  max-width: 1180px !important;
+  margin: 32px auto !important;
+  padding: 28px !important;
+  box-sizing: border-box !important;
+  background: #101a2a !important;
+  color: #eef6ff !important;
+  border: 1px solid #294668 !important;
+  border-radius: 28px !important;
+  box-shadow: 0 24px 70px rgba(0,0,0,.28) !important;
+}
+.msb-comments-wrapper .msb-review-topbar {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 18px !important;
+  padding: 0 0 22px !important;
+  border-bottom: 1px solid #294668 !important;
+}
+.msb-comments-wrapper .msb-comments-list {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: stretch !important;
+  gap: 24px !important;
+  width: 100% !important;
+  margin: 24px 0 !important;
+  padding: 8px 4px 24px !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  scroll-snap-type: x mandatory !important;
+  -webkit-overflow-scrolling: touch !important;
+}
+.msb-comments-wrapper .msb-comments-list > article.msb-comment-card {
+  display: flex !important;
+  flex: 0 0 370px !important;
+  flex-direction: column !important;
+  min-height: 300px !important;
+  margin: 0 !important;
+  padding: 24px !important;
+  box-sizing: border-box !important;
+  scroll-snap-align: start !important;
+  background: linear-gradient(150deg, #1c314b 0%, #142238 100%) !important;
+  border: 1px solid #38658d !important;
+  border-radius: 22px !important;
+  box-shadow: 0 14px 30px rgba(0,0,0,.25) !important;
+}
+.msb-comments-wrapper .msb-comments-list > article.msb-comment-card:hover {
+  border-color: #53b5ff !important;
+  box-shadow: 0 18px 38px rgba(20,130,220,.22) !important;
+  transform: translateY(-4px) !important;
+}
+.msb-comments-wrapper .msb-comments-subtitle { color: #a9c4df !important; }
+.msb-comments-wrapper .msb-comment-author-name { color: #fff !important; font-weight: 800 !important; }
+.msb-comments-wrapper .msb-comment-content { color: #dcecff !important; font-size: 16px !important; line-height: 1.65 !important; }
+.msb-comments-wrapper .msb-stars { color: #ffc857 !important; letter-spacing: 3px !important; }
+.msb-comments-wrapper .msb-primary-button,
+.msb-comments-wrapper .msb-submit-button {
+  background: #53b5ff !important;
+  color: #071321 !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  font-weight: 800 !important;
+  padding: 12px 22px !important;
+}
+@media (max-width: 700px) {
+  .msb-comments-wrapper { margin: 16px 0 !important; padding: 18px 14px !important; border-radius: 20px !important; }
+  .msb-comments-wrapper .msb-review-topbar { align-items: flex-start !important; flex-direction: column !important; }
+  .msb-comments-wrapper .msb-comments-list { margin-left: -6px !important; margin-right: -6px !important; width: calc(100% + 12px) !important; gap: 14px !important; }
+  .msb-comments-wrapper .msb-comments-list > article.msb-comment-card { flex-basis: calc(100vw - 58px) !important; min-height: 280px !important; padding: 20px !important; }
+}
+
+/* v1.0.3: synchronize with TV Repair theme */
+:root[data-tvr-theme="dark"] .msb-comments-wrapper,
+body[data-tvr-theme="dark"] .msb-comments-wrapper,
+.tvr-dark .msb-comments-wrapper { background: #101a2a !important; color: #eef6ff !important; }
+:root[data-tvr-theme="light"] .msb-comments-wrapper,
+body[data-tvr-theme="light"] .msb-comments-wrapper { background: #f5f8fc !important; color: #17263a !important; border-color: #d9e3ef !important; box-shadow: 0 16px 45px rgba(36,65,95,.12) !important; }
+:root[data-tvr-theme="light"] .msb-comments-wrapper .msb-comment-card,
+body[data-tvr-theme="light"] .msb-comments-wrapper .msb-comment-card { background: #fff !important; color: #17263a !important; border-color: #d9e3ef !important; box-shadow: 0 10px 28px rgba(36,65,95,.10) !important; }
+.msb-comments-wrapper .msb-comments-list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+@media (max-width: 900px) { .msb-comments-wrapper .msb-comments-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 600px) { .msb-comments-wrapper .msb-comments-list { grid-template-columns: 1fr; } }
+
+/* v1.0.3 grid override: align with the site's responsive card grid */
+.msb-comments-wrapper .msb-comments-list { display: grid !important; flex-wrap: initial !important; overflow: visible !important; scroll-snap-type: none !important; }
+.msb-comments-wrapper .msb-comments-list > article.msb-comment-card { flex: initial !important; width: auto !important; }
+
+/* v1.0.4: TV Repair width, compact cards and light-theme text */
+.msb-comments-wrapper { max-width: 1540px !important; width: min(1540px, calc(100% - 32px)) !important; }
+.msb-comments-wrapper .msb-comments-list { gap: 16px !important; }
+.msb-comments-wrapper .msb-comments-list > article.msb-comment-card { padding: 18px !important; min-height: 250px !important; }
+:root[data-tvr-theme="light"] .msb-comments-wrapper *, body[data-tvr-theme="light"] .msb-comments-wrapper * { color: #26384a !important; }
+:root[data-tvr-theme="light"] .msb-comments-wrapper .msb-stars, body[data-tvr-theme="light"] .msb-comments-wrapper .msb-stars { color: #e2a400 !important; }
+@media (min-width: 1100px) { .msb-comments-wrapper .msb-comments-list { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; } }
+
+/* v1.0.5: final compact layout and theme-safe modal */
+.msb-comments-wrapper { box-sizing:border-box !important; width:100% !important; max-width:1540px !important; margin-left:auto !important; margin-right:auto !important; }
+.msb-comments-wrapper .msb-comments-list { display:grid !important; grid-template-columns:repeat(4,minmax(0,1fr)) !important; gap:18px !important; align-items:stretch !important; }
+.msb-comments-wrapper .msb-comments-list > article.msb-comment-card { width:100% !important; min-width:0 !important; min-height:0 !important; padding:18px !important; border-radius:18px !important; }
+.msb-comments-wrapper .msb-comment-content { margin-top:14px !important; }
+.msb-comments-wrapper .msb-comment-actions { margin-top:auto !important; padding-top:18px !important; }
+.msb-comments-wrapper .msb-helpful-button { color:#36516b !important; background:#edf4fa !important; border:1px solid #c8d8e7 !important; border-radius:999px !important; cursor:pointer !important; }
+.msb-comments-wrapper .msb-helpful-button--voted { color:#fff !important; background:#2388d7 !important; border-color:#2388d7 !important; }
+.msb-comments-wrapper .msb-modal-overlay { background:rgba(10,22,38,.62) !important; }
+.msb-comments-wrapper .msb-modal-dialog { background:#fff !important; color:#26384a !important; border:1px solid #d8e4ef !important; border-radius:24px !important; box-shadow:0 24px 80px rgba(18,45,72,.28) !important; }
+.msb-comments-wrapper .msb-modal-dialog * { color:#26384a !important; }
+.msb-comments-wrapper .msb-modal-dialog input,
+.msb-comments-wrapper .msb-modal-dialog textarea,
+.msb-comments-wrapper .msb-modal-dialog select { background:#f7fafc !important; color:#26384a !important; border:1px solid #cbd9e6 !important; }
+:root[data-tvr-theme="dark"] .msb-comments-wrapper .msb-modal-dialog,
+body[data-tvr-theme="dark"] .msb-comments-wrapper .msb-modal-dialog,
+.tvr-dark .msb-comments-wrapper .msb-modal-dialog { background:#17283d !important; color:#eef6ff !important; border-color:#38658d !important; }
+:root[data-tvr-theme="dark"] .msb-comments-wrapper .msb-modal-dialog *,
+body[data-tvr-theme="dark"] .msb-comments-wrapper .msb-modal-dialog *,
+.tvr-dark .msb-comments-wrapper .msb-modal-dialog * { color:#eef6ff !important; }
+:root[data-tvr-theme="dark"] .msb-comments-wrapper .msb-modal-dialog input,
+:root[data-tvr-theme="dark"] .msb-comments-wrapper .msb-modal-dialog textarea,
+:root[data-tvr-theme="dark"] .msb-comments-wrapper .msb-modal-dialog select,
+body[data-tvr-theme="dark"] .msb-comments-wrapper .msb-modal-dialog input,
+body[data-tvr-theme="dark"] .msb-comments-wrapper .msb-modal-dialog textarea,
+body[data-tvr-theme="dark"] .msb-comments-wrapper .msb-modal-dialog select,
+.tvr-dark .msb-comments-wrapper .msb-modal-dialog input,
+.tvr-dark .msb-comments-wrapper .msb-modal-dialog textarea,
+.tvr-dark .msb-comments-wrapper .msb-modal-dialog select { background:#102033 !important; color:#eef6ff !important; border-color:#416887 !important; }
+@media(max-width:1100px){.msb-comments-wrapper .msb-comments-list{grid-template-columns:repeat(3,minmax(0,1fr)) !important;}}
+@media(max-width:800px){.msb-comments-wrapper .msb-comments-list{grid-template-columns:repeat(2,minmax(0,1fr)) !important;}}
+@media(max-width:560px){.msb-comments-wrapper .msb-comments-list{grid-template-columns:1fr !important;gap:14px !important;}.msb-comments-wrapper{padding:16px !important;}}
+
+/* v1.0.7: unscoped fixes for theme, modal and compact card layout */
+.msb-comments-wrapper,
+.msb-comments-wrapper * { box-sizing:border-box !important; }
+.msb-comments-wrapper { width:100% !important; max-width:1540px !important; margin-inline:auto !important; }
+.msb-comments-wrapper .msb-comments-list { width:100% !important; display:grid !important; grid-template-columns:repeat(4,minmax(0,1fr)) !important; gap:20px !important; }
+.msb-comments-wrapper .msb-comments-list .msb-comment-card { width:100% !important; min-width:0 !important; padding:16px !important; border-radius:16px !important; }
+.msb-helpful-button { cursor:pointer !important; color:#27435d !important; background:#f0f5f9 !important; border:1px solid #b8cad9 !important; opacity:1 !important; }
+.msb-helpful-button--voted { color:#fff !important; background:#1685d1 !important; border-color:#1685d1 !important; }
+.msb-modal-overlay { background:rgba(8,20,34,.68) !important; }
+.msb-modal-dialog { background:#fff !important; color:#26384a !important; border:1px solid #d6e2ed !important; border-radius:24px !important; }
+.msb-modal-dialog, .msb-modal-dialog h1, .msb-modal-dialog h2, .msb-modal-dialog h3, .msb-modal-dialog p, .msb-modal-dialog label, .msb-modal-dialog span { color:#26384a !important; }
+.msb-modal-dialog input, .msb-modal-dialog textarea, .msb-modal-dialog select { background:#f7fafc !important; color:#26384a !important; border:1px solid #c4d5e3 !important; }
+:root[data-tvr-theme="dark"] .msb-modal-dialog, body[data-tvr-theme="dark"] .msb-modal-dialog, .tvr-dark .msb-modal-dialog { background:#17283d !important; color:#edf6ff !important; border-color:#416887 !important; }
+:root[data-tvr-theme="dark"] .msb-modal-dialog *, body[data-tvr-theme="dark"] .msb-modal-dialog *, .tvr-dark .msb-modal-dialog * { color:#edf6ff !important; }
+:root[data-tvr-theme="dark"] .msb-modal-dialog input, :root[data-tvr-theme="dark"] .msb-modal-dialog textarea, :root[data-tvr-theme="dark"] .msb-modal-dialog select, body[data-tvr-theme="dark"] .msb-modal-dialog input, body[data-tvr-theme="dark"] .msb-modal-dialog textarea, body[data-tvr-theme="dark"] .msb-modal-dialog select, .tvr-dark .msb-modal-dialog input, .tvr-dark .msb-modal-dialog textarea, .tvr-dark .msb-modal-dialog select { background:#0f2032 !important; color:#edf6ff !important; border-color:#416887 !important; }
+@media(max-width:1100px){.msb-comments-wrapper .msb-comments-list{grid-template-columns:repeat(3,minmax(0,1fr)) !important;}}
+@media(max-width:800px){.msb-comments-wrapper .msb-comments-list{grid-template-columns:repeat(2,minmax(0,1fr)) !important;}}
+@media(max-width:560px){.msb-comments-wrapper .msb-comments-list{grid-template-columns:1fr !important;gap:14px !important;}}
+
+/* v1.0.8: strict site grid, sort controls and light theme cleanup */
+.msb-comments-wrapper { width:100% !important; max-width:1540px !important; margin:0 auto !important; padding-left:clamp(16px,2vw,32px) !important; padding-right:clamp(16px,2vw,32px) !important; }
+.msb-comments-wrapper .msb-sort-bar { background:#f4f7fa !important; color:#26384a !important; border:1px solid #d5e0e9 !important; border-radius:14px !important; padding:10px 14px !important; }
+.msb-comments-wrapper .msb-sort-bar *, .msb-comments-wrapper .msb-sort-label, .msb-comments-wrapper .msb-sort-chip { color:#26384a !important; }
+.msb-comments-wrapper .msb-sort-chip { background:#fff !important; border:1px solid #c5d5e2 !important; border-radius:999px !important; }
+.msb-comments-wrapper .msb-sort-chip--active { background:#2388d7 !important; color:#fff !important; border-color:#2388d7 !important; }
+.msb-comments-wrapper .msb-comments-list { width:100% !important; max-width:1540px !important; margin-left:auto !important; margin-right:auto !important; grid-template-columns:repeat(4,minmax(0,1fr)) !important; gap:clamp(14px,1.5vw,24px) !important; }
+.msb-comments-wrapper .msb-comments-list .msb-comment-card { width:100% !important; max-width:none !important; }
+:root[data-tvr-theme="dark"] .msb-comments-wrapper .msb-sort-bar, body[data-tvr-theme="dark"] .msb-comments-wrapper .msb-sort-bar, .tvr-dark .msb-comments-wrapper .msb-sort-bar { background:#17283d !important; color:#edf6ff !important; border-color:#416887 !important; }
+:root[data-tvr-theme="dark"] .msb-comments-wrapper .msb-sort-bar *, body[data-tvr-theme="dark"] .msb-comments-wrapper .msb-sort-bar *, .tvr-dark .msb-comments-wrapper .msb-sort-bar * { color:#edf6ff !important; }
+:root[data-tvr-theme="dark"] .msb-comments-wrapper .msb-sort-chip, body[data-tvr-theme="dark"] .msb-comments-wrapper .msb-sort-chip, .tvr-dark .msb-comments-wrapper .msb-sort-chip { background:#102033 !important; border-color:#416887 !important; }
+@media(max-width:1100px){.msb-comments-wrapper .msb-comments-list{grid-template-columns:repeat(3,minmax(0,1fr)) !important;}}
+@media(max-width:800px){.msb-comments-wrapper .msb-comments-list{grid-template-columns:repeat(2,minmax(0,1fr)) !important;}}
+@media(max-width:560px){.msb-comments-wrapper .msb-comments-list{grid-template-columns:1fr !important;}}
+
+/* v1.0.9: unified text color, shadows, alignment and persistent vote state */
+.msb-comments-wrapper { max-width:1540px !important; width:min(1540px,100%) !important; margin-inline:auto !important; }
+.msb-comments-wrapper .msb-sort-bar,
+.msb-comments-wrapper .msb-sort-chip,
+.msb-comments-wrapper .msb-helpful-button,
+.msb-comments-wrapper .msb-reaction-button,
+.msb-comments-wrapper .msb-review-stat { box-shadow:0 5px 16px rgba(24,55,82,.14) !important; }
+:root[data-tvr-theme="light"] .msb-comments-wrapper *, body[data-tvr-theme="light"] .msb-comments-wrapper * { color:#26384a !important; }
+:root[data-tvr-theme="light"] .msb-comments-wrapper .msb-helpful-button,
+body[data-tvr-theme="light"] .msb-comments-wrapper .msb-helpful-button { color:#26384a !important; background:#fff !important; border:1px solid #cbd9e5 !important; box-shadow:0 5px 16px rgba(24,55,82,.16) !important; }
+:root[data-tvr-theme="light"] .msb-comments-wrapper .msb-helpful-button--voted,
+body[data-tvr-theme="light"] .msb-comments-wrapper .msb-helpful-button--voted { color:#fff !important; background:#2388d7 !important; border-color:#2388d7 !important; }
+:root[data-tvr-theme="light"] .msb-comments-wrapper .msb-reaction-button--voted,
+body[data-tvr-theme="light"] .msb-comments-wrapper .msb-reaction-button--voted { background:#dceeff !important; border-color:#2388d7 !important; box-shadow:0 5px 16px rgba(35,136,215,.3) !important; }
+@media(min-width:1200px){.msb-comments-wrapper .msb-comments-list{grid-template-columns:repeat(4,minmax(0,1fr)) !important;}}

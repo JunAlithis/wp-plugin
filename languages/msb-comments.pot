@@ -1,0 +1,197 @@
+#, fuzzy
+
+msgid ""
+
+msgstr ""
+
+"Project-Id-Version: Post Comments Single Page (Meryosab)\n"
+
+"Report-Msgid-Bugs-To: \n"
+
+"POT-Creation-Date: 2025-12-12 22:24+0000\n"
+
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+
+"Last-Translator: FULL NAME &lt;EMAIL@ADDRESS&gt;\n"
+
+"Language-Team: \n"
+
+"Language: \n"
+
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+"MIME-Version: 1.0\n"
+
+"Content-Type: text/plain; charset=UTF-8\n"
+
+"Content-Transfer-Encoding: 8bit\n"
+
+"X-Generator: Loco [https://localise.biz/\n](https://localise.biz/\n)"
+
+"X-Loco-Version: 2.8.0; wp-6.9; php-8.2.29\n"
+
+"X-Domain: msb-comments"
+
+#: admin_control/admin_control.php:111
+
+msgid "API-ключи ИИ"
+
+msgstr ""
+
+#. Author of the plugin
+
+msgid "Meryosab"
+
+msgstr ""
+
+#. Name of the plugin
+
+msgid "Post Comments Single Page (Meryosab)"
+
+msgstr ""
+
+#: admin_control/admin_control.php:207
+
+msgid ""
+
+"Если оставить поле пустым — будет использоваться текст по умолчанию из файла "
+
+"msb-ai-prompt.php."
+
+msgstr ""
+
+#: admin_control/admin_control.php:216
+
+msgid ""
+
+"Если оставить поле пустым — будет использоваться текст по умолчанию из файла "
+
+"msb-ai-reply-prompt.php."
+
+msgstr ""
+
+#: admin_control/admin_control.php:145
+
+msgid ""
+
+"Если оставить пустым — для ответов будет использоваться тот же ключ, что и "
+
+"для анализа."
+
+msgstr ""
+
+#: admin_control/admin_control.php:154
+
+msgid "Имя бота поддержки"
+
+msgstr ""
+
+#: admin_control/admin_control.php:134
+
+msgid "Используется для автоматической проверки и модерации отзывов."
+
+msgstr ""
+
+#: admin_control/admin_control.php:116
+
+msgid "Ключ для анализа отзывов (MSB-AI / др.)"
+
+msgstr ""
+
+#: admin_control/admin_control.php:134
+
+msgid "Ключ для ответов на отзывы (опционально)"
+
+msgstr ""
+
+#: admin_control/admin_control.php:106
+
+msgid "Настройки отзывов Meryosab"
+
+msgstr ""
+
+#: admin_control/admin_control.php:82
+
+msgid "Настройки сохранены."
+
+msgstr ""
+
+#: admin_control/admin_control.php:184
+
+msgid ""
+
+"Одна услуга — одна строка. Эти значения появляются в выпадающем списке "
+
+"«Услуга» на фронтенде."
+
+msgstr ""
+
+#: function_connect_js_css_php/function_connect_js_css.php:40
+
+msgid "Поддержка печатает…"
+
+msgstr ""
+
+#: admin_control/admin_control.php:193
+
+msgid "Подзаголовок блока отзывов"
+
+msgstr ""
+
+#. Description of the plugin
+
+msgid ""
+
+"Подстраница /comments/ для комментариев + шорткоды [msb_comments], "
+
+"[msb_recent_reviews], [msb_top_reviews] для отзывов."
+
+msgstr ""
+
+#: admin_control/admin_control.php:205
+
+msgid "Промпт ИИ для анализа отзывов"
+
+msgstr ""
+
+#: admin_control/admin_control.php:214
+
+msgid "Промпт ИИ для ответов на отзывы"
+
+msgstr ""
+
+#: admin_control/admin_control.php:227
+
+msgid "Сохранить изменения"
+
+msgstr ""
+
+#: admin_control/admin_control.php:182
+
+msgid "Список услуг для формы отзыва"
+
+msgstr ""
+
+#: admin_control/admin_control.php:195
+
+msgid ""
+
+"Текст под основным заголовком на странице отзывов (класс .msb-comments-"
+
+"subtitle)."
+
+msgstr ""
+
+#. %s: site name
+
+#: admin_control/admin_control.php:168
+
+#, php-format
+
+msgid ""
+
+"Это имя будет отображаться как автор авто-ответа ИИ. Если оставить пустым — "
+
+"будет использоваться \"%s — команда поддержки\"."
+
+msgstr ""
