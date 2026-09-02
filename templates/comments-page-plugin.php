@@ -366,6 +366,11 @@ if ( ! function_exists( 'msb_register_all_ui_strings' ) ) {
         msb_i18n_register_string( 'btn_reply',             'Ответить' );
         msb_i18n_register_string( 'btn_helpful',           'Полезный отзыв' );
 
+        // --- КАРУСЕЛЬ ОТЗЫВОВ (v1.6.0) ---
+        msb_i18n_register_string( 'carousel_prev_aria',    'Предыдущие отзывы' );
+        msb_i18n_register_string( 'carousel_next_aria',    'Следующие отзывы' );
+        msb_i18n_register_string( 'carousel_dots_aria',    'Позиция в карусели отзывов' );
+
         msb_i18n_register_string( 'pagination_aria',       'Навигация по отзывам' );
         msb_i18n_register_string( 'pagination_page_of',    'Страница %1$s из %2$s' );
         msb_i18n_register_string( 'pagination_prev',       'Предыдущие отзывы' );

@@ -1,0 +1,1377 @@
+/* =========================================================
+ *  MSB COMMENTS — PC Repair by Meryosab
+ *  v1.5.0 — адаптация под pcrepair.meryosab.com
+ *
+ *  1) Палитра строго по сайту (light/dark), значения совпадают
+ *     с переменными --pcr-* / --msb-tvp-* блоков сайта.
+ *  2) Тема: блок сам держит data-theme="light|dark",
+ *     скрипт msb-pcr-theme-sync.js синхронизирует его с
+ *     document.documentElement[data-theme] (и data-pch-theme)
+ *     — как это делают все блоки сайта.
+ *  3) Сетка строго по странице: контейнер 1540px,
+ *     боковые отступы 24px (18px @900px, 14px @640px),
+ *     секция 64px 0 68px — идентично блокам pch-hp-*.
+ *  4) Типографика сайта: Inter, h2 44px/850, kicker 12px/850.
+ * ======================================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+/* =========================================================
+ * ПАЛИТРА.
+ * Если плагин окажется внутри блока сайта, который сам
+ * определяет --pcr-*, мы подхватим их; иначе — fallback'и
+ * с точными значениями палитры сайта.
+ * ======================================================= */
+
+.msb-pcr-block {
+    --msb-bg:            var(--pcr-bg, #f3f0e8);
+    --msb-surface:       var(--pcr-surface, #fffcf6);
+    --msb-surface-2:     var(--pcr-surface-2, #ece7dc);
+    --msb-surface-3:     var(--pcr-surface-3, #e2dccf);
+    --msb-line:          var(--pcr-line, rgba(16, 38, 65, .10));
+    --msb-line-strong:   var(--pcr-line-strong, rgba(16, 38, 65, .18));
+    --msb-text:          var(--pcr-text, #161814);
+    --msb-muted:         var(--pcr-muted, #5c635b);
+    --msb-dim:           var(--pcr-dim, #7a8178);
+    --msb-accent:        var(--pcr-accent, #d4a017);
+    --msb-accent-soft:   var(--pcr-accent-soft, rgba(212, 160, 23, .10));
+    --msb-cta:           var(--pcr-cta, #e06a2c);
+    --msb-cta-hover:     var(--pcr-cta-hover, #f07c40);
+    --msb-cta-text:      var(--pcr-cta-text, #fff);
+    --msb-shadow:        var(--pcr-shadow, 0 24px 65px rgba(19, 37, 60, .16));
+    --msb-shadow-card:   0 10px 28px rgba(19, 37, 60, .10);
+    --msb-danger:        #c2402a;
+    --msb-danger-soft:   rgba(194, 64, 42, .08);
+    --msb-danger-line:   rgba(194, 64, 42, .35);
+    --msb-overlay:       rgba(16, 38, 65, .45);
+    --msb-container:     1540px;
+    --msb-font:          Inter, 'Segoe UI', Roboto, Arial, Helvetica, sans-serif;
+
+    color-scheme: light;
+}
+
+/* Тёмная тема сайта: data-theme="dark" ставит синхронизатор */
+.msb-pcr-block[data-theme='dark'] {
+    --msb-bg:            var(--pcr-bg, #0e1210);
+    --msb-surface:       var(--pcr-surface, #161c19);
+    --msb-surface-2:     var(--pcr-surface-2, #1d2622);
+    --msb-surface-3:     var(--pcr-surface-3, #24302b);
+    --msb-line:          var(--pcr-line, rgba(220, 238, 255, .11));
+    --msb-line-strong:   var(--pcr-line-strong, rgba(220, 238, 255, .18));
+    --msb-text:          var(--pcr-text, #f1eee6);
+    --msb-muted:         var(--pcr-muted, #a8b3ab);
+    --msb-dim:           var(--pcr-dim, #7d8a82);
+    --msb-accent:        var(--pcr-accent, #e6b84a);
+    --msb-accent-soft:   var(--pcr-accent-soft, rgba(212, 160, 23, .12));
+    --msb-cta:           var(--pcr-cta, #e06a2c);
+    --msb-cta-hover:     var(--pcr-cta-hover, #f07c40);
+    --msb-cta-text:      var(--pcr-cta-text, #fff);
+    --msb-shadow:        var(--pcr-shadow, 0 34px 90px rgba(0, 0, 0, .42));
+    --msb-shadow-card:   0 12px 32px rgba(0, 0, 0, .28);
+    --msb-danger:        #ff8f73;
+    --msb-danger-soft:   rgba(224, 106, 44, .10);
+    --msb-danger-line:   rgba(224, 106, 44, .38);
+    --msb-overlay:       rgba(0, 0, 0, .58);
+
+    color-scheme: dark;
+}
+
+/* =========================================================
+ * КАРКАС / СЕТКА СТРАНИЦЫ (как у блоков сайта)
+ * ======================================================= */
+
+.msb-pcr-block {
+    display: block;
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: var(--msb-font);
+    color: var(--msb-text);
+    font-size: 16px;
+    line-height: 1.6;
+    transition: background-color .25s ease;
+}
+
+.msb-pcr-block,
+.msb-pcr-block *,
+.msb-pcr-block *::before,
+.msb-pcr-block *::after {
+    box-sizing: border-box;
+    min-width: 0;
+}
+
+.msb-pcr-section {
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 64px 0 68px;
+    background: var(--msb-bg);
+    overflow-x: hidden;
+}
+
+.msb-pcr-container {
+    width: 100%;
+    max-width: var(--msb-container);
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+/* Внутренняя обёртка (сохраняем класс для совместимости с JS) */
+.msb-pcr-container .msb-comments-wrapper {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    background: none;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    overflow: visible;
+}
+
+/* =========================================================
+ * ШАПКА СЕКЦИИ (заголовок + подводка)
+ * ======================================================= */
+
+.msb-pcr-head {
+    max-width: 920px;
+}
+
+.msb-pcr-kicker {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 0 18px;
+    color: var(--msb-accent);
+    font-size: 12px;
+    font-weight: 850;
+    letter-spacing: .16em;
+    line-height: 1.3;
+    text-transform: uppercase;
+}
+
+.msb-pcr-kicker::before {
+    content: "";
+    width: 26px;
+    height: 2px;
+    background: currentColor;
+    flex: none;
+}
+
+.msb-pcr-title {
+    max-width: 920px;
+    margin: 0 0 18px;
+    color: var(--msb-text);
+    font-family: var(--msb-font);
+    font-size: 44px;
+    font-weight: 850;
+    letter-spacing: -.04em;
+    line-height: 1.08;
+    text-wrap: balance;
+}
+
+.msb-pcr-lead {
+    max-width: 760px;
+    margin: 0;
+    color: var(--msb-muted);
+    font-size: 17px;
+    line-height: 1.7;
+}
+
+/* =========================================================
+ * ВЕРХНЯЯ ПАНЕЛЬ (кнопка «Написать отзыв»)
+ * ======================================================= */
+
+.msb-review-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 16px;
+    margin: 30px 0 22px;
+    flex-wrap: wrap;
+}
+
+.msb-open-review-modal,
+.msb-primary-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px 28px;
+    border: none;
+    border-radius: 14px;
+    background: var(--msb-cta);
+    color: var(--msb-cta-text);
+    font-family: var(--msb-font);
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: .01em;
+    cursor: pointer;
+    transition: background-color .2s ease, transform .2s ease, box-shadow .2s ease;
+}
+
+.msb-open-review-modal:hover,
+.msb-primary-button:hover {
+    background: var(--msb-cta-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 10px 24px rgba(224, 106, 44, .28);
+}
+
+.msb-open-review-modal:active,
+.msb-primary-button:active {
+    transform: translateY(0);
+}
+
+.msb-secondary-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 22px;
+    border: 1px solid var(--msb-line-strong);
+    border-radius: 14px;
+    background: transparent;
+    color: var(--msb-muted);
+    font-family: var(--msb-font);
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: border-color .2s ease, color .2s ease, background-color .2s ease;
+}
+
+.msb-secondary-button:hover {
+    border-color: var(--msb-accent);
+    color: var(--msb-accent);
+    background: var(--msb-accent-soft);
+}
+
+/* =========================================================
+ * СПИСОК ОТЗЫВОВ — СЕТКА КАРТОЧЕК
+ * ======================================================= */
+
+.msb-comments-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(420px, 100%), 1fr));
+    gap: 16px;
+    align-items: stretch;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+/* =========================================================
+ * КАРТОЧКА ОТЗЫВА (стиль карточек сайта)
+ * ======================================================= */
+
+.msb-comment-card {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    padding: 20px;
+    background: var(--msb-surface);
+    border: 1px solid var(--msb-line);
+    border-radius: 16px;
+    color: var(--msb-text);
+    font-size: 15px;
+    line-height: 1.6;
+    transition: border-color .2s ease, box-shadow .2s ease;
+}
+
+.msb-comment-card:hover {
+    border-color: var(--msb-line-strong);
+    box-shadow: var(--msb-shadow-card);
+}
+
+.msb-comment-card a {
+    color: var(--msb-accent);
+    text-decoration: none;
+}
+
+.msb-comment-card a:hover {
+    text-decoration: underline;
+}
+
+/* ---------- Шапка карточки ---------- */
+
+.msb-comment-card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 14px;
+    margin-bottom: 12px;
+}
+
+.msb-comment-author-block {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    min-width: 0;
+}
+
+.msb-comment-avatar {
+    flex: none;
+}
+
+.msb-comment-avatar img,
+.msb-comment-avatar .avatar {
+    display: block;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid var(--msb-line-strong);
+    background: var(--msb-surface-2);
+}
+
+.msb-comment-author-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+    padding-top: 2px;
+}
+
+.msb-comment-author-name {
+    color: var(--msb-text);
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1.3;
+    overflow-wrap: anywhere;
+}
+
+.msb-comment-meta-line {
+    color: var(--msb-dim);
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+/* ---------- Рейтинг ---------- */
+
+.msb-comment-rating {
+    flex: none;
+    padding-top: 4px;
+    text-align: right;
+}
+
+.msb-stars {
+    color: var(--msb-accent);
+    font-size: 14px;
+    letter-spacing: 2px;
+    white-space: nowrap;
+}
+
+/* ---------- Текст отзыва ---------- */
+
+.msb-comment-content {
+    color: var(--msb-muted);
+    font-size: 15px;
+    line-height: 1.65;
+    overflow-wrap: anywhere;
+}
+
+.msb-comment-content p {
+    margin: 0 0 10px;
+}
+
+.msb-comment-content p:last-child {
+    margin-bottom: 0;
+}
+
+/* ---------- Медиа в отзыве ---------- */
+
+.msb-comment-media {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 14px;
+}
+
+.msb-comment-media-item {
+    display: block;
+    width: 120px;
+    height: 90px;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--msb-line);
+    background: var(--msb-surface-2);
+    transition: border-color .2s ease, transform .2s ease;
+}
+
+.msb-comment-media-item:hover {
+    border-color: var(--msb-accent);
+    transform: translateY(-2px);
+}
+
+.msb-comment-media-item img,
+.msb-comment-media-item video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* ---------- Действия под отзывом ---------- */
+
+.msb-comment-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: auto;
+    padding-top: 16px;
+}
+
+.msb-comment-actions-left,
+.msb-comment-actions-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.msb-comment-actions-right {
+    margin-left: auto;
+}
+
+.msb-reply-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border: 1px solid var(--msb-line);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--msb-muted);
+    font-family: var(--msb-font);
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: border-color .2s ease, color .2s ease, background-color .2s ease;
+}
+
+.msb-reply-button:hover {
+    border-color: var(--msb-accent);
+    color: var(--msb-accent);
+    background: var(--msb-accent-soft);
+}
+
+/* ---------- Реакции ---------- */
+
+.msb-reactions-bar {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.msb-reaction-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 34px;
+    padding: 6px 14px;
+    border: 1px solid var(--msb-line);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--msb-muted);
+    font-family: var(--msb-font);
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: border-color .2s ease, color .2s ease, background-color .2s ease;
+}
+
+.msb-reaction-button:hover {
+    border-color: var(--msb-accent);
+    color: var(--msb-accent);
+    background: var(--msb-accent-soft);
+}
+
+.msb-reaction-button--voted {
+    border-color: var(--msb-accent);
+    color: var(--msb-accent);
+    background: var(--msb-accent-soft);
+}
+
+.msb-reaction-emoji {
+    font-size: 14px;
+    line-height: 1;
+}
+
+.msb-reaction-count,
+.msb-helpful-count {
+    font-weight: 800;
+}
+
+/* ---------- «Полезный отзыв» ---------- */
+
+.msb-helpful-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 34px;
+    padding: 6px 16px;
+    border: 1px solid var(--msb-line);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--msb-muted);
+    font-family: var(--msb-font);
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: border-color .2s ease, color .2s ease, background-color .2s ease;
+}
+
+.msb-helpful-button:hover {
+    border-color: var(--msb-accent);
+    color: var(--msb-accent);
+    background: var(--msb-accent-soft);
+}
+
+.msb-helpful-button.active,
+.msb-helpful-button--voted {
+    border-color: var(--msb-accent);
+    color: var(--msb-accent);
+    background: var(--msb-accent-soft);
+}
+
+.msb-helpful-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 22px;
+    height: 22px;
+    padding: 0 7px;
+    border-radius: 999px;
+    background: var(--msb-accent-soft);
+    color: var(--msb-accent);
+    font-size: 12px;
+}
+
+.msb-helpful-button.loading {
+    opacity: .7;
+    cursor: wait;
+}
+
+.msb-helpful-button.voted {
+    cursor: default;
+    opacity: .8;
+}
+
+/* ---------- Вложенные ответы ---------- */
+
+.msb-comment-children {
+    margin-top: 14px;
+    padding: 0 0 0 18px;
+    border-left: 2px solid var(--msb-line);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.msb-comment-card--child {
+    padding: 14px 16px;
+    background: var(--msb-surface-2);
+}
+
+.msb-comment-card--child:hover {
+    border-color: var(--msb-line-strong);
+    box-shadow: none;
+}
+
+/* =========================================================
+ * СОСТОЯНИЕ «ОТЗЫВОВ ПОКА НЕТ»
+ * ======================================================= */
+
+.msb-no-comments {
+    max-width: 640px;
+    margin: 10px auto 0;
+    padding: 44px 28px;
+    text-align: center;
+    color: var(--msb-dim);
+    font-size: 15px;
+    line-height: 1.6;
+    background: var(--msb-surface);
+    border: 1px dashed var(--msb-line-strong);
+    border-radius: 16px;
+}
+
+/* =========================================================
+ * ПАГИНАЦИЯ
+ * ======================================================= */
+
+.msb-pagination {
+    margin-top: 34px;
+    padding-top: 22px;
+    border-top: 1px solid var(--msb-line);
+}
+
+.msb-pagination__info {
+    margin: 0 0 14px;
+    text-align: center;
+    color: var(--msb-dim);
+    font-size: 13px;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+}
+
+.msb-pagination__links {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+.msb-pagination__prev,
+.msb-pagination__next {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-width: 220px;
+    padding: 12px 24px;
+    border: 1px solid var(--msb-line-strong);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--msb-accent);
+    font-family: var(--msb-font);
+    font-size: 14px;
+    font-weight: 800;
+    text-decoration: none;
+    transition: border-color .2s ease, background-color .2s ease, transform .2s ease;
+}
+
+.msb-pagination__prev:hover,
+.msb-pagination__next:hover {
+    border-color: var(--msb-accent);
+    background: var(--msb-accent-soft);
+    transform: translateY(-1px);
+}
+
+.msb-pagination__pages {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 14px;
+}
+
+.msb-pagination__page {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+    height: 40px;
+    padding: 0 12px;
+    border: 1px solid var(--msb-line);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--msb-muted);
+    font-family: var(--msb-font);
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: border-color .2s ease, color .2s ease, background-color .2s ease;
+}
+
+.msb-pagination__page:hover {
+    border-color: var(--msb-accent);
+    color: var(--msb-accent);
+}
+
+.msb-pagination__page.active {
+    border-color: var(--msb-accent);
+    background: var(--msb-accent-soft);
+    color: var(--msb-accent);
+}
+
+/* =========================================================
+ * МОДАЛЬНОЕ ОКНО (тема наследуется от блока)
+ * ======================================================= */
+
+.msb-modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: var(--msb-overlay);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+}
+
+.msb-modal-overlay.is-open {
+    display: flex;
+    animation: msb-pcr-fade-in .2s ease;
+}
+
+@keyframes msb-pcr-fade-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+.msb-modal-dialog {
+    position: relative;
+    width: 100%;
+    max-width: 640px;
+    max-height: calc(100vh - 40px);
+    padding: 26px;
+    overflow-y: auto;
+    background: var(--msb-surface);
+    color: var(--msb-text);
+    border: 1px solid var(--msb-line-strong);
+    border-radius: 20px;
+    box-shadow: var(--msb-shadow);
+    font-family: var(--msb-font);
+    animation: msb-pcr-slide-up .28s cubic-bezier(.22, .9, .3, 1.05);
+}
+
+@keyframes msb-pcr-slide-up {
+    from { opacity: 0; transform: translateY(18px) scale(.98); }
+    to   { opacity: 1; transform: none; }
+}
+
+.msb-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 18px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--msb-line);
+}
+
+.msb-modal-title {
+    color: var(--msb-text);
+    font-size: 20px;
+    font-weight: 850;
+    letter-spacing: -.02em;
+    line-height: 1.2;
+}
+
+.msb-modal-close {
+    flex: none;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: 1px solid var(--msb-line);
+    border-radius: 50%;
+    background: transparent;
+    color: var(--msb-muted);
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+    transition: border-color .2s ease, color .2s ease, background-color .2s ease;
+}
+
+.msb-modal-close:hover {
+    border-color: var(--msb-line-strong);
+    color: var(--msb-text);
+    background: var(--msb-surface-2);
+}
+
+.msb-modal-body {
+    padding: 0;
+}
+
+/* =========================================================
+ * ФОРМА ОТЗЫВА
+ * ======================================================= */
+
+#respond,
+#respond .comment-respond {
+    margin: 0;
+    padding: 0;
+    background: transparent;
+}
+
+.msb-comment-form,
+#commentform {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    min-height: 0;
+}
+
+.msb-form-title {
+    margin: 0 0 6px;
+    color: var(--msb-text);
+    font-family: var(--msb-font);
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1.4;
+}
+
+.msb-form-title small {
+    font-weight: 400;
+}
+
+.msb-form-title small a {
+    color: var(--msb-dim);
+    text-decoration: underline;
+}
+
+.msb-form-row,
+.msb-form-row-compact {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin: 0;
+}
+
+.msb-form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1 1 0;
+    min-width: 0;
+}
+
+.msb-form-field-full {
+    flex: 1 1 100%;
+    min-width: 100%;
+}
+
+.msb-form-field label {
+    color: var(--msb-muted);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: .01em;
+}
+
+.msb-form-field input[type='text'],
+.msb-form-field input[type='email'],
+.msb-form-field input[type='url'],
+.msb-form-field select,
+.msb-form-field textarea {
+    width: 100%;
+    padding: 11px 14px;
+    background: var(--msb-surface-2);
+    border: 1px solid var(--msb-line);
+    border-radius: 12px;
+    color: var(--msb-text);
+    font-family: var(--msb-font);
+    font-size: 15px;
+    line-height: 1.5;
+    outline: none;
+    transition: border-color .18s ease, box-shadow .18s ease, background-color .18s ease;
+}
+
+.msb-form-field input::placeholder,
+.msb-form-field textarea::placeholder {
+    color: var(--msb-dim);
+}
+
+.msb-form-field input[type='text']:focus,
+.msb-form-field input[type='email']:focus,
+.msb-form-field input[type='url']:focus,
+.msb-form-field select:focus,
+.msb-form-field textarea:focus {
+    background: var(--msb-surface);
+    border-color: var(--msb-accent);
+    box-shadow: 0 0 0 3px var(--msb-accent-soft);
+}
+
+.msb-form-field textarea {
+    min-height: 110px;
+    resize: vertical;
+    line-height: 1.6;
+}
+
+/* чекбокс «запомнить меня» */
+.comment-form-cookies-consent {
+    margin: 0;
+    color: var(--msb-dim);
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.comment-form-cookies-consent input {
+    margin: 0 8px 2px 0;
+    vertical-align: middle;
+    accent-color: var(--msb-cta);
+}
+
+.comment-form-cookies-consent label {
+    display: inline;
+    color: var(--msb-dim);
+    font-size: 13px;
+    font-weight: 400;
+}
+
+/* «Вы вошли как…» */
+.logged-in-as {
+    margin: 0;
+    padding: 10px 14px;
+    color: var(--msb-muted);
+    font-size: 13px;
+    background: var(--msb-surface-2);
+    border: 1px solid var(--msb-line);
+    border-radius: 12px;
+}
+
+.logged-in-as a {
+    color: var(--msb-accent);
+    text-decoration: underline;
+}
+
+/* ---------- Звёзды в форме ---------- */
+
+.msb-rating-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 0;
+    padding: 0;
+    background: none;
+    border: none;
+}
+
+.msb-rating-stars {
+    display: inline-flex;
+    flex-direction: row-reverse;
+    gap: 4px;
+    position: relative;
+}
+
+.msb-rating-stars input[type='radio'] {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.msb-rating-stars label {
+    cursor: pointer;
+    color: var(--msb-surface-3);
+    font-size: 26px;
+    line-height: 1;
+    transition: color .15s ease, transform .15s ease;
+}
+
+.msb-rating-stars label:hover,
+.msb-rating-stars label:hover ~ label {
+    color: var(--msb-accent);
+}
+
+.msb-rating-stars label:hover {
+    transform: scale(1.1);
+}
+
+.msb-rating-stars input[type='radio']:checked ~ label {
+    color: var(--msb-accent);
+}
+
+/* ---------- Файлы (фото/видео) ---------- */
+
+.msb-media-field input[type='file'] {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px dashed var(--msb-line-strong);
+    border-radius: 12px;
+    background: transparent;
+    color: var(--msb-muted);
+    font-family: var(--msb-font);
+    font-size: 14px;
+    cursor: pointer;
+    transition: border-color .18s ease, background-color .18s ease;
+}
+
+.msb-media-field input[type='file']:hover {
+    border-color: var(--msb-accent);
+    background: var(--msb-accent-soft);
+}
+
+.msb-media-field input[type='file']::file-selector-button {
+    margin-right: 12px;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 999px;
+    background: var(--msb-surface-3);
+    color: var(--msb-text);
+    font-family: var(--msb-font);
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+/* список выбранных файлов (photo_add_to_comment.js) */
+.msb-media-selected-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.msb-media-file-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    border: 1px solid var(--msb-line);
+    border-radius: 999px;
+    background: var(--msb-surface-2);
+    color: var(--msb-muted);
+    font-size: 12px;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+}
+
+/* ---------- Ошибки валидации ---------- */
+
+.msb-form-error {
+    margin-top: 6px;
+    padding: 8px 12px;
+    border: 1px solid var(--msb-danger-line);
+    border-radius: 10px;
+    background: var(--msb-danger-soft);
+    color: var(--msb-danger);
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+/* ---------- Кнопка отправки ---------- */
+
+.msb-form-submit,
+.form-submit {
+    margin: 6px 0 0;
+    padding-top: 0;
+    border-top: none;
+    text-align: left;
+}
+
+.msb-submit-button,
+.msb-form-submit input[type='submit'] {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    min-width: 0;
+    padding: 14px 28px;
+    border: none;
+    border-radius: 14px;
+    background: var(--msb-cta);
+    color: var(--msb-cta-text);
+    font-family: var(--msb-font);
+    font-size: 15px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: background-color .2s ease, transform .2s ease, box-shadow .2s ease;
+}
+
+.msb-submit-button:hover,
+.msb-form-submit input[type='submit']:hover {
+    background: var(--msb-cta-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 10px 24px rgba(224, 106, 44, .28);
+}
+
+.msb-submit-button:active,
+.msb-form-submit input[type='submit']:active {
+    transform: translateY(0);
+}
+
+.msb-submit-button.msb-button-disabled,
+.msb-submit-button:disabled {
+    cursor: not-allowed;
+    opacity: .6;
+    transform: none;
+    box-shadow: none;
+}
+
+/* ---------- Индикатор «печатает…» ---------- */
+
+.msb-ai-typing {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    padding: 8px 14px;
+    border: 1px solid var(--msb-line);
+    border-radius: 999px;
+    color: var(--msb-dim);
+    font-size: 13px;
+    font-style: italic;
+}
+
+.msb-ai-typing::after {
+    content: '●●●';
+    font-size: .7em;
+    letter-spacing: 2px;
+    animation: msb-pcr-dots 1s infinite;
+}
+
+@keyframes msb-pcr-dots {
+    0%   { opacity: .25; }
+    50%  { opacity: 1; }
+    100% { opacity: .25; }
+}
+
+/* ---------- Скроллбар модалки ---------- */
+
+.msb-modal-dialog::-webkit-scrollbar {
+    width: 6px;
+}
+
+.msb-modal-dialog::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.msb-modal-dialog::-webkit-scrollbar-thumb {
+    background: var(--msb-line-strong);
+    border-radius: 3px;
+}
+
+/* =========================================================
+ * АДАПТИВНОСТЬ — те же брейкпоинты, что у блоков сайта
+ * ======================================================= */
+
+@media (max-width: 900px) {
+    .msb-pcr-section {
+        padding: 56px 0;
+    }
+
+    .msb-pcr-container {
+        padding-inline: 18px;
+    }
+
+    .msb-pcr-title {
+        font-size: 36px;
+    }
+}
+
+@media (max-width: 640px) {
+    .msb-pcr-section {
+        padding: 46px 0;
+    }
+
+    .msb-pcr-container {
+        padding-inline: 14px;
+    }
+
+    .msb-pcr-title {
+        font-size: 30px;
+    }
+
+    .msb-pcr-kicker {
+        font-size: 10px;
+        letter-spacing: .12em;
+    }
+
+    .msb-pcr-lead {
+        font-size: 15px;
+    }
+
+    .msb-review-topbar {
+        justify-content: stretch;
+    }
+
+    .msb-open-review-modal {
+        width: 100%;
+    }
+
+    .msb-modal-dialog {
+        padding: 18px 16px;
+        border-radius: 16px;
+    }
+
+    .msb-form-row-compact {
+        flex-direction: column;
+    }
+
+    .msb-form-field {
+        min-width: 100%;
+    }
+
+    .msb-pagination__links {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .msb-pagination__prev,
+    .msb-pagination__next {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .msb-comment-card-header {
+        flex-wrap: wrap;
+    }
+}
+
+/* =========================================================
+ * УВАЖЕНИЕ К prefers-reduced-motion
+ * ======================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+    .msb-pcr-block *,
+    .msb-pcr-block *::before,
+    .msb-pcr-block *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+    }
+}
+
+/* =========================================================
+ * КАРУСЕЛЬ ОТЗЫВОВ (v1.6.0)
+ *  - .msb-carousel[data-msb-carousel] — обёртка;
+ *  - JS (js_scripts/msb-carousel.js) добавляет класс .is-carousel
+ *    и листает .msb-carousel-track;
+ *  - без JS список остаётся сеткой (fallback ниже),
+ *    управление скрывается через <noscript> в шаблоне.
+ *  - карточек на экране: 3 (>=1200px), 2 (>=760px), 1 (меньше).
+ * ======================================================= */
+
+.msb-carousel {
+    position: relative;
+}
+
+/* Fallback (без JS): сетка, как в v1.5.0 */
+.msb-carousel .msb-carousel-track {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(420px, 100%), 1fr));
+    gap: 16px;
+    align-items: stretch;
+}
+
+.msb-carousel-viewport {
+    overflow: hidden;
+    margin: 0;
+    touch-action: pan-y; /* вертикальный скролл страницы остаётся, свайп ловим сам */
+}
+
+/* Режим карусели (JS включён) */
+.msb-carousel.is-carousel .msb-carousel-track {
+    display: flex;
+    gap: 16px;
+    align-items: stretch;
+    transition: transform .45s cubic-bezier(.22, .61, .36, 1);
+    will-change: transform;
+}
+
+.msb-carousel.is-carousel .msb-carousel-track > .msb-comment-card {
+    min-width: 0;
+}
+
+/* ---------- Управление: стрелки + точки ---------- */
+
+.msb-carousel-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: 22px;
+}
+
+/* Если отзывов ≤ количества на экране — управление не нужно */
+.msb-carousel--static .msb-carousel-controls {
+    display: none;
+}
+
+.msb-carousel-btn {
+    flex: none;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--msb-line-strong);
+    border-radius: 50%;
+    background: transparent;
+    color: var(--msb-accent);
+    cursor: pointer;
+    transition: border-color .2s ease, background-color .2s ease,
+        transform .2s ease, opacity .2s ease;
+}
+
+.msb-carousel-btn svg {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.msb-carousel-btn:hover:not(:disabled) {
+    border-color: var(--msb-accent);
+    background: var(--msb-accent-soft);
+    transform: translateY(-1px);
+}
+
+.msb-carousel-btn:disabled {
+    opacity: .35;
+    cursor: default;
+}
+
+.msb-carousel-dots {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    flex: 1;
+    min-width: 0;
+}
+
+.msb-carousel-dot {
+    width: 8px;
+    height: 8px;
+    padding: 0;
+    border: none;
+    border-radius: 999px;
+    background: var(--msb-surface-3);
+    cursor: pointer;
+    transition: width .25s ease, background-color .2s ease;
+}
+
+.msb-carousel-dot:hover {
+    background: var(--msb-accent);
+}
+
+.msb-carousel-dot.is-active {
+    width: 26px;
+    background: var(--msb-accent);
+}
+
+/* ---------- Адаптив ---------- */
+
+@media (max-width: 640px) {
+    .msb-carousel-controls {
+        margin-top: 18px;
+        gap: 12px;
+    }
+
+    .msb-carousel-btn {
+        width: 44px;
+        height: 44px;
+    }
+
+    .msb-carousel-dot {
+        width: 7px;
+        height: 7px;
+    }
+
+    .msb-carousel-dot.is-active {
+        width: 22px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .msb-carousel .msb-carousel-track {
+        transition: none !important;
+    }
+}

@@ -13,11 +13,11 @@ function msb_comments_enqueue_assets() {
     $plugin_path = trailingslashit( MSB_COMMENTS_PLUGIN_DIR );
 
     // --- CSS ---
-    // v1.5.0 — единый файл для PC Repair by Meryosab:
+    // v1.6.0 — единый файл для PC Repair by Meryosab:
     // палитра сайта (light/dark), сетка страницы 1540px,
-    // карточки/форма/модалка. Заменяет comments-page-v1.4.0.css,
-    // ekran_nadpis_otzyw.css и comment-card.css.
-    wp_enqueue_style('msb-pcr-comments', $plugin_url . 'static_css/comments-page-v1.5.0.css', array(), '1.5.0');
+    // карточки/форма/модалка + карусель отзывов (v1.6.0).
+    // Заменяет comments-page-v1.4.0.css, ekran_nadpis_otzyw.css и comment-card.css.
+    wp_enqueue_style('msb-pcr-comments', $plugin_url . 'static_css/comments-page-v1.6.0.css', array(), '1.6.0');
 
     wp_enqueue_style('msb-recent-reviews', $plugin_url . 'static_css/recent-reviews-grid.css', array(), '1.0.0');
     wp_enqueue_style('msb-top-reviews',    $plugin_url . 'static_css/top-reviews-grid.css', array('msb-recent-reviews'), '1.0.0');
@@ -26,6 +26,15 @@ function msb_comments_enqueue_assets() {
     wp_enqueue_script(
         'msb-pcr-theme-sync',
         $plugin_url . 'js_scripts/msb-pcr-theme-sync.js',
+        array(),
+        '1.0.0',
+        true
+    );
+
+    // --- JS: карусель отзывов с пагинацией (стрелки + точки + свайп) ---
+    wp_enqueue_script(
+        'msb-carousel-js',
+        $plugin_url . 'js_scripts/msb-carousel.js',
         array(),
         '1.0.0',
         true

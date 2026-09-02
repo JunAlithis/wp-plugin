@@ -51,6 +51,10 @@ $aria_react_wow      = msb_tpl_ui( 'recent_stat_wow',  'Вау', $td );
 
 $btn_helpful         = msb_tpl_ui( 'btn_helpful', 'Полезный отзыв', $td );
 
+$carousel_prev_aria  = msb_tpl_ui( 'carousel_prev_aria', 'Предыдущие отзывы', $td );
+$carousel_next_aria  = msb_tpl_ui( 'carousel_next_aria', 'Следующие отзывы', $td );
+$carousel_dots_aria  = msb_tpl_ui( 'carousel_dots_aria', 'Позиция в карусели отзывов', $td );
+
 $aria_pagination     = msb_tpl_ui( 'pagination_aria', 'Навигация по отзывам', $td );
 $pagination_label    = msb_tpl_ui( 'pagination_page_of', 'Страница %1$s из %2$s', $td );
 $pagination_prev     = msb_tpl_ui( 'pagination_prev', 'Предыдущие отзывы', $td );
@@ -90,7 +94,13 @@ $modal_close_label   = msb_tpl_ui( 'modal_close', 'Закрыть', $td );
 
     <?php if ( ! empty( $comments ) ) : ?>
 
-        <div class="msb-comments-list">
+        <!-- Карусель: .msb-carousel-track листает JS (js_scripts/msb-carousel.js).
+             Без JS список отображается сеткой (fallback в CSS),
+             управление каруселью скрываем. -->
+        <noscript><style>.msb-carousel-controls{display:none!important}</style></noscript>
+        <div class="msb-carousel" data-msb-carousel>
+            <div class="msb-carousel-viewport">
+                <div class="msb-comments-list msb-carousel-track">
             <?php foreach ( $comments as $index => $comment ) : ?>
                 <?php
                 $comment_id   = $comment->comment_ID;
@@ -255,7 +265,24 @@ $modal_close_label   = msb_tpl_ui( 'modal_close', 'Закрыть', $td );
                     <?php endif; ?>
                 </article>
             <?php endforeach; ?>
-        </div>
+                </div><!-- /.msb-carousel-track -->
+            </div><!-- /.msb-carousel-viewport -->
+
+            <div class="msb-carousel-controls">
+                <button type="button"
+                        class="msb-carousel-btn msb-carousel-btn--prev"
+                        aria-label="<?php echo esc_attr( $carousel_prev_aria ); ?>">
+                    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg>
+                </button>
+                <div class="msb-carousel-dots" role="group"
+                     aria-label="<?php echo esc_attr( $carousel_dots_aria ); ?>"></div>
+                <button type="button"
+                        class="msb-carousel-btn msb-carousel-btn--next"
+                        aria-label="<?php echo esc_attr( $carousel_next_aria ); ?>">
+                    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
+                </button>
+            </div>
+        </div><!-- /.msb-carousel -->
 
         <?php
         // ===== ПАГИНАЦИЯ ПО 10 ОТЗЫВОВ =====
