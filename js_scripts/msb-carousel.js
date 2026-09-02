@@ -10,6 +10,10 @@
  *  - карточек на «экране»: 3 (ширина >= 1200px), 2 (>= 760px), 1 (остальное);
  *  - шаг — одна карточка; точки — по числу позиций;
  *  - свайп пальцем/мышью (порог 40px, до 600мс), кнопки клавиатурой;
+ *  - СВЯЗЬ С ПАГИНАЦИЕЙ (v1.7.0): если в разметке указаны
+ *    data-msb-next-page / data-msb-prev-page, то уверенный свайп
+ *    (порог 80px) за последней карточкой открывает следующую страницу
+ *    отзывов, а с первой карточки — предыдущую;
  *  - при ≤ perView карточек управление скрывается;
  *  - если JS выключен — CSS показывает список сеткой (fallback).
  *
@@ -20,7 +24,8 @@
 
     var SELECTOR = '.msb-carousel[data-msb-carousel]';
     var GAP = 16;              // отступ между карточками, px (совпадает с CSS gap)
-    var SWIPE_MIN = 40;        // минимальное смещение свайпа, px
+    var SWIPE_MIN = 40;        // минимальное смещение свайпа (листание карточек), px
+    var PAGE_SWIPE_MIN = 80;   // смещение для смены СТРАНИЦЫ через свайп, px (увереннее)
     var SWIPE_MAX_MS = 600;    // максимальная длительность свайпа, ms
 
     function perViewFor(width) {
@@ -38,6 +43,10 @@
         var prevBtn  = root.querySelector('.msb-carousel-btn--prev');
         var nextBtn  = root.querySelector('.msb-carousel-btn--next');
         var dotsWrap = root.querySelector('.msb-carousel-dots');
+
+        // URL соседних страниц (ставит PHP в разметку; может отсутствовать)
+        var prevPageUrl = root.getAttribute('data-msb-prev-page') || '';
+        var nextPageUrl = root.getAttribute('data-msb-next-page') || '';
 
         if (!viewport || !track || !prevBtn || !nextBtn || !dotsWrap) { return; }
 
@@ -152,9 +161,26 @@
             startX = null;
             track.style.transition = reduced ? 'none' : '';
             if (Math.abs(dx) < SWIPE_MIN || dt > SWIPE_MAX_MS) { return; }
-            if (dx < 0 && index < maxIndex) { index++; }
-            else if (dx > 0 && index > 0) { index--; }
-            render();
+
+            if (dx < 0) {
+                // Свайп влево
+                if (index < maxIndex) {
+                    index++;
+                    render();
+                } else if (nextPageUrl && Math.abs(dx) >= PAGE_SWIPE_MIN) {
+                    // Долистали до конца — уверенный свайп ведёт на следующую страницу
+                    window.location.href = nextPageUrl;
+                }
+            } else {
+                // Свайп вправо
+                if (index > 0) {
+                    index--;
+                    render();
+                } else if (prevPageUrl && Math.abs(dx) >= PAGE_SWIPE_MIN) {
+                    // На первой карточке — свайп назад к предыдущей странице
+                    window.location.href = prevPageUrl;
+                }
+            }
         });
 
         viewport.addEventListener('pointerleave', function () {

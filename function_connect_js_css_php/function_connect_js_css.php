@@ -31,12 +31,13 @@ function msb_comments_enqueue_assets() {
         true
     );
 
-    // --- JS: карусель отзывов с пагинацией (стрелки + точки + свайп) ---
+    // --- JS: карусель отзывов (стрелки + точки + свайп,
+    //        свайп за краем карусели меняет страницу отзывов) ---
     wp_enqueue_script(
         'msb-carousel-js',
         $plugin_url . 'js_scripts/msb-carousel.js',
         array(),
-        '1.0.0',
+        '1.1.0',
         true
     );
 

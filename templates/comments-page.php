@@ -97,8 +97,29 @@ $modal_close_label   = msb_tpl_ui( 'modal_close', 'Закрыть', $td );
         <!-- Карусель: .msb-carousel-track листает JS (js_scripts/msb-carousel.js).
              Без JS список отображается сеткой (fallback в CSS),
              управление каруселью скрываем. -->
+        <?php
+        // ===== СВАЙП С ПАГИНАЦИЕЙ (v1.7.0) =====
+        // URL предыдущей/следующей страницы для карусели:
+        // свайп за последней карточкой → следующая страница,
+        // свайп с первой карточки (стр. > 1) → предыдущая.
+        $msb_prev_page_url = '';
+        $msb_next_page_url = '';
+        if ( isset( $pagination ) && ! empty( $pagination ) && ! empty( $pagination['total'] ) && (int) $pagination['total'] > 1 ) {
+            $msb_current_page = (int) $pagination['current'];
+            $msb_total_pages  = (int) $pagination['total'];
+            $msb_base_url     = remove_query_arg( 'msb_page' );
+            if ( $msb_current_page > 1 ) {
+                $msb_prev_page_url = add_query_arg( 'msb_page', $msb_current_page - 1, $msb_base_url );
+            }
+            if ( $msb_current_page < $msb_total_pages ) {
+                $msb_next_page_url = add_query_arg( 'msb_page', $msb_current_page + 1, $msb_base_url );
+            }
+        }
+        ?>
         <noscript><style>.msb-carousel-controls{display:none!important}</style></noscript>
-        <div class="msb-carousel" data-msb-carousel>
+        <div class="msb-carousel" data-msb-carousel
+            <?php if ( ! empty( $msb_prev_page_url ) ) : ?>data-msb-prev-page="<?php echo esc_url( $msb_prev_page_url ); ?>"<?php endif; ?>
+            <?php if ( ! empty( $msb_next_page_url ) ) : ?>data-msb-next-page="<?php echo esc_url( $msb_next_page_url ); ?>"<?php endif; ?>>
             <div class="msb-carousel-viewport">
                 <div class="msb-comments-list msb-carousel-track">
             <?php foreach ( $comments as $index => $comment ) : ?>
