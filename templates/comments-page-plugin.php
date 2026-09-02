@@ -131,7 +131,7 @@ add_action( 'init', function () {
 
     // Подзаголовок (если хранится в options)
     $td = MSB_COMMENTS_TEXT_DOMAIN;
-    $default_subtitle = __( 'Поделитесь своими впечатлениями об этом месте. Ваш отзыв помогает другим путешественникам.', $td );
+    $default_subtitle = __( 'Ваш отзыв о нашей работе помогает другим клиентам сделать правильный выбор.', $td );
     $subtitle_raw = get_option( 'msb_comments_subtitle_text', $default_subtitle );
     $subtitle_raw = is_string( $subtitle_raw ) ? $subtitle_raw : $default_subtitle;
     msb_i18n_register_string( 'msb_comments_subtitle_text', $subtitle_raw );
@@ -139,7 +139,7 @@ add_action( 'init', function () {
     // Список услуг (многострочный)
     $raw = get_option( 'msb_comments_service_types', '' );
     if ( $raw === '' ) {
-        $raw = "Визовая поддержка\nПриглашение в Туркменистан\nТранзит\nТуризм\nДругое";
+        $raw = "Ремонт компьютера\nРемонт ноутбука\nВидеокарта\nМатеринская плата\nСборка / апгрейд\nУстановка Windows\nДругое";
     }
     $lines = preg_split( '/\r\n|\r|\n/', (string) $raw );
     foreach ( $lines as $line ) {
@@ -233,9 +233,9 @@ if ( ! function_exists( 'msb_comments_get_service_types' ) ) {
         // Берём сырое значение из options (многострочный текст)
         $raw = get_option( 'msb_comments_service_types', '' );
 
-        // Если опция пустая — дефолтный список
+        // Если опция пустая — дефолтный список (услуги PC Repair)
         if ( $raw === '' ) {
-            $raw = "Визовая поддержка\nПриглашение в Туркменистан\nТранзит\nТуризм\nДругое";
+            $raw = "Ремонт компьютера\nРемонт ноутбука\nВидеокарта\nМатеринская плата\nСборка / апгрейд\nУстановка Windows\nДругое";
         }
 
         $lines = preg_split( '/\r\n|\r|\n/', (string) $raw );
@@ -350,7 +350,7 @@ if ( ! function_exists( 'msb_register_all_ui_strings' ) ) {
         msb_i18n_register_string( 'field_comment_label',       'Комментарий' );
         msb_i18n_register_string(
             'field_comment_placeholder',
-            'Поделитесь своими впечатлениями об этом месте.'
+            'Расскажите, что случилось с устройством и как прошла работа.'
         );
 
         // --- ЭЛЕМЕНТЫ ИНТЕРФЕЙСА comments-page.php ---

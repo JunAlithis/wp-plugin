@@ -66,15 +66,23 @@ $modal_title_default = msb_tpl_ui( 'js_modal_title_review', 'Оставьте о
 $modal_close_label   = msb_tpl_ui( 'modal_close', 'Закрыть', $td );
 ?>
 
+<!--
+    PC Repair by Meryosab — обёртка блока.
+    .msb-pcr-block[data-theme] — тема блока (синхронизируется с темой сайта
+    скриптом js_scripts/msb-pcr-theme-sync.js), .msb-pcr-section/.msb-pcr-container
+    — сетка, идентичная блокам сайта (контейнер 1540px).
+-->
+<div class="msb-pcr-block" data-theme="light">
+<div class="msb-pcr-section">
+<div class="msb-pcr-container">
 <div class="msb-comments-wrapper">
-    <div class="home-page-block-34__head">
-        <div class="home-page-block-34__kicker">Отзывы клиентов</div>
-        <h2 id="home-page-block-34-title">Отзывы о наших услугах</h2>
-        <p>Читайте реальные отзывы клиентов о ремонте и обслуживании телевизоров. Поделитесь своим опытом, чтобы помочь другим клиентам сделать правильный выбор.</p>
+    <div class="msb-pcr-head">
+        <div class="msb-pcr-kicker">Отзывы клиентов</div>
+        <h2 id="msb-pcr-reviews-title" class="msb-pcr-title">Отзывы о наших услугах</h2>
+        <p class="msb-pcr-lead">Читайте реальные отзывы клиентов о ремонте компьютеров, ноутбуков и комплектующих. Поделитесь своим опытом, чтобы помочь другим клиентам сделать правильный выбор.</p>
     </div>
 
     <div class="msb-review-topbar">
-        <div></div>
         <button type="button" class="msb-open-review-modal msb-primary-button">
             <?php echo esc_html( $btn_write_review ); ?>
         </button>
@@ -294,12 +302,14 @@ $modal_close_label   = msb_tpl_ui( 'modal_close', 'Закрыть', $td );
         </p>
     <?php endif; ?>
 </div>
+</div><!-- /.msb-pcr-container -->
+</div><!-- /.msb-pcr-section -->
 
-<!-- Модальное окно "Написать отзыв / Ответить" -->
+<!-- Модальное окно "Написать отзыв / Ответить" (внутри блока — наследует тему) -->
 <div class="msb-modal-overlay" id="msb-review-modal">
-    <div class="msb-modal-dialog">
+    <div class="msb-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="msb-review-modal-title">
         <div class="msb-modal-header">
-            <div class="msb-modal-title"><?php echo esc_html( $modal_title_default ); ?></div>
+            <div class="msb-modal-title" id="msb-review-modal-title"><?php echo esc_html( $modal_title_default ); ?></div>
 
             <button type="button"
                     class="msb-modal-close"
@@ -322,3 +332,4 @@ $modal_close_label   = msb_tpl_ui( 'modal_close', 'Закрыть', $td );
         </div>
     </div>
 </div>
+</div><!-- /.msb-pcr-block -->

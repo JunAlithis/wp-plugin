@@ -128,7 +128,7 @@ if ( ! function_exists( 'msb_comments_shortcode' ) ) {
         $label_submit            = function_exists( 'msb_ui_tr' ) ? msb_ui_tr( 'button_submit', 'Отправить' ) : __( 'Отправить', $td );
 
         $label_comment           = function_exists( 'msb_ui_tr' ) ? msb_ui_tr( 'field_comment_label', 'Комментарий' ) : __( 'Комментарий', $td );
-        $placeholder_comment     = function_exists( 'msb_ui_tr' ) ? msb_ui_tr( 'field_comment_placeholder', 'Поделитесь своими впечатлениями об этом месте.' ) : __( 'Поделитесь своими впечатлениями об этом месте.', $td );
+        $placeholder_comment     = function_exists( 'msb_ui_tr' ) ? msb_ui_tr( 'field_comment_placeholder', 'Расскажите, что случилось с устройством и как прошла работа.' ) : __( 'Расскажите, что случилось с устройством и как прошла работа.', $td );
 
         // ---------- ПОЛЯ ФОРМЫ ----------
         $fields = array();
@@ -168,7 +168,7 @@ if ( ! function_exists( 'msb_comments_shortcode' ) ) {
 
         $service_types = function_exists( 'msb_comments_get_service_types' )
             ? msb_comments_get_service_types()
-            : array( 'Визовая поддержка', 'Приглашение в Туркменистан', 'Транзит', 'Туризм', 'Другое' );
+            : array( 'Ремонт компьютера', 'Ремонт ноутбука', 'Видеокарта', 'Материнская плата', 'Сборка / апгрейд', 'Установка Windows', 'Другое' );
 
         $options_html  = '<option value="">' . esc_html( $placeholder_service_sel ) . '</option>';
 

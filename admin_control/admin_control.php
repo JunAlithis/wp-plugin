@@ -104,7 +104,7 @@ function msb_comments_render_settings_page() {
         'msb_comments_ai_reply_key'    => '',
         'msb_comments_ai_bot_name'     => '',
         'msb_comments_subtitle_text'   => '',
-        'msb_comments_service_types'   => "Визовая поддержка\nПриглашение в Туркменистан\nТранзит\nТуризм\nДругое",
+        'msb_comments_service_types'   => "Ремонт компьютера\nРемонт ноутбука\nВидеокарта\nМатеринская плата\nСборка / апгрейд\nУстановка Windows\nДругое",
         'msb_comments_prompt_analysis' => '',
         'msb_comments_prompt_reply'    => '',
     );
