@@ -223,7 +223,7 @@ function msb_ai_chat( $system_prompt, $user_prompt, $purpose = 'check', $max_tok
     }
 
     try {
-        $started = function_exists( 'hrtime' ) ? hrtime() : (int) ( microtime( true ) * 1000000 );
+        $started = function_exists( 'hrtime' ) ? hrtime( true ) : (int) ( microtime( true ) * 1000000 );
 
         $response = wp_remote_post(
             $endpoint,
