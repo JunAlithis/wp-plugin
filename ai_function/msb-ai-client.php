@@ -247,7 +247,7 @@ function msb_ai_chat( $system_prompt, $user_prompt, $purpose = 'check', $max_tok
             )
         );
 
-        $elapsed_ms = (int) ( ( ( function_exists( 'hrtime' ) ? hrtime() : (int) ( microtime( true ) * 1000000 ) ) - $started ) / 1000000 );
+        $elapsed_ms = (int) ( ( ( function_exists( 'hrtime' ) ? hrtime( true ) : (int) ( microtime( true ) * 1000000 ) ) - $started ) / 1000000 );
         $result['elapsed_ms'] = $elapsed_ms;
 
         if ( is_wp_error( $response ) ) {
