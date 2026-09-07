@@ -42,7 +42,21 @@ function msb_ajax_ai_diagnose() {
         wp_send_json_error( array( 'message' => 'Модуль ИИ не загружен (ai_function/msb-ai-client.php отсутствует).' ), 500 );
     }
 
-    $result = msb_ai_diagnose();
+    try {
+        $result = msb_ai_diagnose();
+    } catch ( \Throwable $e ) {
+        wp_send_json_error(
+            array(
+                'message' => sprintf(
+                    'Внутренняя ошибка плагина: %s (строка %d, %s). Подробности: wp-content/uploads/msb_ai.log',
+                    $e->getMessage(),
+                    (int) $e->getLine(),
+                    basename( (string) $e->getFile() )
+                ),
+            ),
+            500
+        );
+    }
 
     if ( $result['ok'] ) {
         wp_send_json_success( array( 'message' => $result['message'] ) );

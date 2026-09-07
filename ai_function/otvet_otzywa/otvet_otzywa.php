@@ -156,7 +156,12 @@ function msb_ai_run_scheduled_reply( $comment_id ) {
     }
     $user_text .= "\nСоставь короткий вежливый ответ на языке отзыва. Не упоминай ИИ. Обычно 1–4 предложения.";
 
-    $response = msb_ai_chat( $prompt, $user_text, 'reply', 400, 0.4 );
+    try {
+        $response = msb_ai_chat( $prompt, $user_text, 'reply', 400, 0.4 );
+    } catch ( \Throwable $e ) {
+        msb_ai_reply_log( 'EXCEPTION: comment_id=' . $comment_id . ' — ' . $e->getMessage() );
+        return;
+    }
     if ( ! $response['ok'] ) {
         msb_ai_reply_log( 'ERROR: comment_id=' . $comment_id . ' — ' . $response['error'] );
         // Разблокируем: при следующем событии не будет повторной попытки

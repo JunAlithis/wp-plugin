@@ -165,6 +165,25 @@ function msb_ai_explain_status( $status ) {
 }
 
 /**
+ * Простой лог в wp-content/uploads/msb_ai.log (для диагностики).
+ */
+function msb_ai_log( $message ) {
+    if ( ! function_exists( 'wp_upload_dir' ) ) {
+        return;
+    }
+    $dir = wp_upload_dir();
+    if ( empty( $dir['basedir'] ) ) {
+        return;
+    }
+    $file = trailingslashit( $dir['basedir'] ) . 'msb_ai.log';
+    $max  = 2 * 1024 * 1024;
+    if ( file_exists( $file ) && filesize( $file ) > $max ) {
+        file_put_contents( $file, '' );
+    }
+    file_put_contents( $file, '[' . gmdate( 'Y-m-d H:i:s' ) . '] ' . $message . PHP_EOL, FILE_APPEND | LOCK_EX );
+}
+
+/**
  * Основной вызов ИИ.
  *
  * @param string $system_prompt Системный промпт.
@@ -172,9 +191,10 @@ function msb_ai_explain_status( $status ) {
  * @param string $purpose       'check' | 'reply' — выбирает модель и ключ.
  * @param int    $max_tokens    Лимит токенов ответа.
  * @param float  $temperature   Температура.
+ * @param int    $timeout       Таймаут HTTP, секунд (держим ниже лимитов PHP хостинга).
  * @return array{ok:bool, content:string, error:string, http_status:int, provider:string, model:string, endpoint:string, elapsed_ms:int}
  */
-function msb_ai_chat( $system_prompt, $user_prompt, $purpose = 'check', $max_tokens = 400, $temperature = 0 ) {
+function msb_ai_chat( $system_prompt, $user_prompt, $purpose = 'check', $max_tokens = 400, $temperature = 0, $timeout = 20 ) {
     $providers = msb_ai_providers();
     $provider  = msb_ai_get_provider();
     $label     = $providers[ $provider ]['label'];
@@ -202,81 +222,97 @@ function msb_ai_chat( $system_prompt, $user_prompt, $purpose = 'check', $max_tok
         return $result;
     }
 
-    $started = function_exists( 'hrtime' ) ? hrtime() : (int) ( microtime( true ) * 1000000 );
+    try {
+        $started = function_exists( 'hrtime' ) ? hrtime() : (int) ( microtime( true ) * 1000000 );
 
-    $response = wp_remote_post(
-        $endpoint,
-        array(
-            'headers' => array(
-                'Authorization' => 'Bearer ' . $key,
-                'Content-Type'  => 'application/json',
-            ),
-            'body'    => wp_json_encode(
-                array(
-                    'model'       => $model,
-                    'messages'    => array(
-                        array( 'role' => 'system', 'content' => $system_prompt ),
-                        array( 'role' => 'user', 'content'  => $user_prompt ),
-                    ),
-                    'temperature' => $temperature,
-                    'max_tokens'  => (int) $max_tokens,
-                )
-            ),
-            'timeout' => 30,
-        )
-    );
-
-    $elapsed_ms = (int) ( ( ( function_exists( 'hrtime' ) ? hrtime() : (int) ( microtime( true ) * 1000000 ) ) - $started ) / 1000000 );
-    $result['elapsed_ms'] = $elapsed_ms;
-
-    if ( is_wp_error( $response ) ) {
-        $result['error'] = sprintf(
-            'Сетевая ошибка при обращении к %s: %s. Проверьте доступ сервера сайта к интернету и SSL.',
-            $label,
-            $response->get_error_message()
-        );
-        return $result;
-    }
-
-    $status = (int) wp_remote_retrieve_response_code( $response );
-    $body   = (string) wp_remote_retrieve_body( $response );
-    $result['http_status'] = $status;
-
-    if ( $status < 200 || $status >= 300 ) {
-        $explain = msb_ai_explain_status( $status );
-        $result['error'] = sprintf(
-            '%s: HTTP %d — %s.',
-            $label,
-            $status,
-            $explain
+        $response = wp_remote_post(
+            $endpoint,
+            array(
+                'headers' => array(
+                    'Authorization' => 'Bearer ' . $key,
+                    'Content-Type'  => 'application/json',
+                ),
+                'body'    => wp_json_encode(
+                    array(
+                        'model'       => $model,
+                        'messages'    => array(
+                            array( 'role' => 'system', 'content' => $system_prompt ),
+                            array( 'role' => 'user', 'content'  => $user_prompt ),
+                        ),
+                        'temperature' => $temperature,
+                        'max_tokens'  => (int) $max_tokens,
+                    )
+                ),
+                'timeout' => (int) $timeout,
+            )
         );
 
-        $snippet = trim( preg_replace( '/\s+/', ' ', $body ) );
-        if ( '' !== $snippet ) {
-            $result['error'] .= ' Ответ провайдера: «' . mb_substr( $snippet, 0, 300 ) . '»';
+        $elapsed_ms = (int) ( ( ( function_exists( 'hrtime' ) ? hrtime() : (int) ( microtime( true ) * 1000000 ) ) - $started ) / 1000000 );
+        $result['elapsed_ms'] = $elapsed_ms;
+
+        if ( is_wp_error( $response ) ) {
+            $result['error'] = sprintf(
+                'Сетевая ошибка при обращении к %s: %s. Проверьте, что сервер сайта может выходить в интернет (и что SSL работает).',
+                $label,
+                $response->get_error_message()
+            );
+            msb_ai_log( 'CHAT ERROR: ' . $result['error'] );
+            return $result;
         }
+
+        $status = (int) wp_remote_retrieve_response_code( $response );
+        $body   = (string) wp_remote_retrieve_body( $response );
+        $result['http_status'] = $status;
+
+        if ( $status < 200 || $status >= 300 ) {
+            $explain = msb_ai_explain_status( $status );
+            $result['error'] = sprintf(
+                '%s: HTTP %d — %s.',
+                $label,
+                $status,
+                $explain
+            );
+
+            $snippet = trim( preg_replace( '/\s+/', ' ', $body ) );
+            if ( '' !== $snippet ) {
+                $result['error'] .= ' Ответ провайдера: «' . mb_substr( $snippet, 0, 300 ) . '»';
+            }
+            msb_ai_log( 'CHAT HTTP ' . $status . ': ' . $result['error'] );
+            return $result;
+        }
+
+        $data = json_decode( $body, true );
+
+        // OpenAI-совместимый формат: choices[0].message.content
+        if ( is_array( $data ) && isset( $data['choices'][0]['message']['content'] ) ) {
+            $result['content'] = trim( (string) $data['choices'][0]['message']['content'] );
+        }
+
+        if ( '' === $result['content'] ) {
+            $result['error'] = sprintf(
+                '%s: неожиданный формат ответа (HTTP %d). Начало ответа: «%s»',
+                $label,
+                $status,
+                mb_substr( trim( preg_replace( '/\s+/', ' ', $body ) ), 0, 300 )
+            );
+            msb_ai_log( 'CHAT FORMAT ERROR: ' . $result['error'] );
+            return $result;
+        }
+
+        $result['ok'] = true;
         return $result;
-    }
-
-    $data = json_decode( $body, true );
-
-    // OpenAI-совместимый формат: choices[0].message.content
-    if ( is_array( $data ) && isset( $data['choices'][0]['message']['content'] ) ) {
-        $result['content'] = trim( (string) $data['choices'][0]['message']['content'] );
-    }
-
-    if ( '' === $result['content'] ) {
-        $result['error'] = sprintf(
-            '%s: неожиданный формат ответа (HTTP %d). Начало ответа: «%s»',
+    } catch ( \Throwable $e ) {
+        $msg = sprintf(
+            'Внутренняя ошибка при обращении к %s: %s (строка %d файла %s)',
             $label,
-            $status,
-            mb_substr( trim( preg_replace( '/\s+/', ' ', $body ) ), 0, 300 )
+            $e->getMessage(),
+            (int) $e->getLine(),
+            $e->getFile()
         );
+        $result['error'] = $msg;
+        msb_ai_log( 'CHAT EXCEPTION: ' . $msg );
         return $result;
     }
-
-    $result['ok'] = true;
-    return $result;
 }
 
 /**
@@ -285,29 +321,41 @@ function msb_ai_chat( $system_prompt, $user_prompt, $purpose = 'check', $max_tok
  * @return array{ok:bool, message:string}
  */
 function msb_ai_diagnose() {
-    $result = msb_ai_chat(
-        'Ты — диагностический инструмент. Отвечай только одним словом: OK.',
-        'Отвечай только одним словом: OK.',
-        'check',
-        16
-    );
+    try {
+        msb_ai_log( 'DIAGNOSE: start' );
+        $result = msb_ai_chat(
+            'Ты — диагностический инструмент. Отвечай только одним словом: OK.',
+            'Отвечай только одним словом: OK.',
+            'check',
+            16,
+            0,
+            20
+        );
 
-    if ( $result['ok'] ) {
-        return array(
-            'ok'      => true,
-            'message' => sprintf(
+        if ( $result['ok'] ) {
+            $message = sprintf(
                 'Всё работает. %s: модель %s, HTTP %d, ответ получен за %d мс. Ответ модели: «%s»',
                 $result['provider'],
                 $result['model'],
                 $result['http_status'],
                 $result['elapsed_ms'],
                 mb_substr( $result['content'], 0, 120 )
-            ),
-        );
-    }
+            );
+            msb_ai_log( 'DIAGNOSE: OK' );
+            return array( 'ok' => true, 'message' => $message );
+        }
 
-    return array(
-        'ok'      => false,
-        'message' => $result['error'] . ' URL запроса: ' . $result['endpoint'] . '. Модель: ' . $result['model'] . '.',
-    );
+        $message = $result['error'] . ' URL запроса: ' . $result['endpoint'] . '. Модель: ' . $result['model'] . '.';
+        msb_ai_log( 'DIAGNOSE: FAIL: ' . $result['error'] );
+        return array( 'ok' => false, 'message' => $message );
+    } catch ( \Throwable $e ) {
+        $msg = sprintf(
+            'Внутренняя ошибка плагина: %s (строка %d файла %s). Подробности также в файле wp-content/uploads/msb_ai.log.',
+            $e->getMessage(),
+            (int) $e->getLine(),
+            basename( (string) $e->getFile() )
+        );
+        msb_ai_log( 'DIAGNOSE EXCEPTION: ' . $e );
+        return array( 'ok' => false, 'message' => $msg );
+    }
 }

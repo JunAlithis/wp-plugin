@@ -59,7 +59,14 @@ function msb_ai_check_review( $commentdata ) {
     $text = "Текст сообщения:\n" . (string) ( $commentdata['comment_content'] ?? '' ) . "\nСтрана: {$country}\nУслуга: {$service}\nРейтинг: {$rating}";
 
     if ( ! function_exists( 'msb_ai_chat' ) ) return 'manual';
-    $response = msb_ai_chat( $system, $text, 'check', 8 );
+
+    try {
+        $response = msb_ai_chat( $system, $text, 'check', 8 );
+    } catch ( \Throwable $e ) {
+        // Любая ошибка — отзыв не теряется: уходит на ручную модерацию.
+        if ( function_exists( 'msb_ai_log' ) ) msb_ai_log( 'MODERATION EXCEPTION: ' . $e->getMessage() );
+        return 'manual';
+    }
 
     $raw = $response['content'];
     $answer = strtolower( trim( preg_replace( '/[^a-zA-Z]/', ' ', $raw ) ) );
