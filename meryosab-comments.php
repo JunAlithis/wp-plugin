@@ -3,7 +3,7 @@
  * Plugin Name: Post Comments Single Page (Meryosab)
  * Plugin URI: https://pcrepair.meryosab.com/
  * Description: Подстраница /comments/ для комментариев и отзывов + шорткоды отзывов. Адаптировано под PC Repair by Meryosab: палитра и сетка сайта, тема light/dark, карусель отзывов с пагинацией и свайпом по страницам, ИИ-модерация (DeepSeek / Gemini / OpenAI-совместимый) и авто-ответы с задержкой.
- * Version: 1.8.0
+ * * Version: 1.8.1
  * Author: Meryosab
  * Text Domain: msb-comments
  * Domain Path: /languages

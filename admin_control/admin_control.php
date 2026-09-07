@@ -355,40 +355,98 @@ function msb_comments_render_settings_page() {
             if (btn) {
                 var result = document.getElementById('msb-ai-test-result');
                 var busy = document.getElementById('msb-ai-test-busy');
+
+                function showResult(message, failed) {
+                    if (result) {
+                        result.textContent = (failed ? '✗ ' : '✓ ') + message;
+                        result.style.borderColor = failed ? '#d63638' : '#00a32a';
+                        result.style.background = failed ? '#fcf0f1' : '#edfaef';
+                        result.style.color = failed ? '#8a2426' : '#005c12';
+                        result.style.display = 'block';
+                    }
+                }
+
+                function handleData(data) {
+                    var msg = (data && data.data && data.data.message) ? data.data.message
+                            : (data && data.message) ? data.message : 'Неизвестный ответ.';
+                    showResult(msg, data && data.success === false);
+                }
+
+                function finish() {
+                    btn.disabled = false;
+                    if (busy) busy.style.display = 'none';
+                }
+
+                function failText(status, body) {
+                    var clean = body ? String(body).replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim() : '';
+                    return 'Ошибка запроса (HTTP ' + status + ') к ' + MSB_AI_ADMIN.ajax_url +
+                        '. Сервер вернул HTML-страницу вместо JSON — обычно это WAF/кэш/защита хостинга ' +
+                        'блокирует запрос к admin-ajax.php. ' +
+                        (clean ? 'Начало ответа: «' + clean.slice(0, 200) + '»' : '') +
+                        ' Попробуйте ещё раз или временно отключите кэширование/WAF.';
+                }
+
                 btn.addEventListener('click', function () {
                     btn.disabled = true;
                     if (busy) busy.style.display = 'inline';
-                    if (result) { result.style.display = 'none'; }
-                    var fd = new FormData();
-                    fd.append('action', 'msb_ai_diagnose');
-                    fd.append('nonce', MSB_AI_ADMIN.nonce);
-                    fetch(MSB_AI_ADMIN.ajax_url, { method: 'POST', credentials: 'same-origin', body: fd })
-                        .then(function (r) { return r.json(); })
-                        .then(function (data) {
-                            var msg = (data && data.data && data.data.message) ? data.data.message
-                                    : (data && data.message) ? data.message : 'Неизвестный ответ.';
-                            var failed = (data && data.success === false);
-                            if (result) {
-                                result.textContent = (failed ? '✗ ' : '✓ ') + msg;
-                                result.style.borderColor = failed ? '#d63638' : '#00a32a';
-                                result.style.background = failed ? '#fcf0f1' : '#edfaef';
-                                result.style.color = failed ? '#8a2426' : '#005c12';
-                                result.style.display = 'block';
+                    if (result) result.style.display = 'none';
+
+                    var data = { action: 'msb_ai_diagnose', nonce: MSB_AI_ADMIN.nonce };
+
+                    /* Вариант 1: jQuery (есть на всех админ-страницах) —
+                       запрос идёт так же, как штатные AJAX-вызовы WordPress:
+                       X-Requested-With + x-www-form-urlencoded. */
+                    if (window.jQuery) {
+                        jQuery.post(MSB_AI_ADMIN.ajax_url, data)
+                            .done(function (r) {
+                                if (typeof r === 'string') {
+                                    // admin-ajax отвечает строкой: 0 (нет хука), -1 (nonce/права)
+                                    showResult('Не-JSON ответ от сервера: «' + String(r).slice(0, 120) +
+                                        '». Если «-1» — сбой nonce/прав, перезагрузите страницу и повторите.', true);
+                                    return;
+                                }
+                                handleData(r);
+                            })
+                            .fail(function (xhr) {
+                                showResult(failText(xhr && xhr.status ? xhr.status : 'нет', xhr && xhr.responseText), true);
+                            })
+                            .always(finish);
+                        return;
+                    }
+
+                    /* Вариант 2: fetch с тем же оформлением запроса, что и jQuery. */
+                    fetch(MSB_AI_ADMIN.ajax_url, {
+                        method: 'POST',
+                        credentials: 'same-origin',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+                        },
+                        body: 'action=msb_ai_diagnose&nonce=' + encodeURIComponent(MSB_AI_ADMIN.nonce)
+                    })
+                        .then(function (r) {
+                            return r.text().then(function (text) {
+                                return { status: r.status, text: text };
+                            });
+                        })
+                        .then(function (res) {
+                            if (res.status < 200 || res.status >= 300) {
+                                showResult(failText(res.status, res.text), true);
+                                return;
                             }
+                            var data2;
+                            try {
+                                data2 = JSON.parse(res.text);
+                            } catch (e) {
+                                showResult(failText(res.status, res.text), true);
+                                return;
+                            }
+                            handleData(data2);
                         })
                         .catch(function (e) {
-                            if (result) {
-                                result.textContent = '✗ Ошибка запроса: ' + e;
-                                result.style.borderColor = '#d63638';
-                                result.style.background = '#fcf0f1';
-                                result.style.color = '#8a2426';
-                                result.style.display = 'block';
-                            }
+                            showResult('Ошибка запроса: ' + e + '. URL: ' + MSB_AI_ADMIN.ajax_url, true);
                         })
-                        .finally(function () {
-                            btn.disabled = false;
-                            if (busy) busy.style.display = 'none';
-                        });
+                        .then(finish);
                 });
             }
         })();
